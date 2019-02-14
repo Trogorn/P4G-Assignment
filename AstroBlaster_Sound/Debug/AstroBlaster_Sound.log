@@ -1,0 +1,43 @@
+﻿  compilation object save succeeded; see F:\P4G\Tutorials\15.AstroBlaster_Sound\bin\data\PSLitNoTex.cso
+  compilation object save succeeded; see F:\P4G\Tutorials\15.AstroBlaster_Sound\bin\data\PSLitTex.cso
+  compilation object save succeeded; see F:\P4G\Tutorials\15.AstroBlaster_Sound\bin\data\PSUnlitNoTex.cso
+  compilation object save succeeded; see F:\P4G\Tutorials\15.AstroBlaster_Sound\bin\data\PSUnlitTex.cso
+  compilation object save succeeded; see F:\P4G\Tutorials\15.AstroBlaster_Sound\bin\data\TextureVS.cso
+  WindowUtils.cpp
+  Warp.cpp
+  UtilsDefines.cpp
+  UserFolder.cpp
+  Starfield.cpp
+  SpriteAnim.cpp
+  ShipController.cpp
+  Ship.cpp
+  ShaderTypes.cpp
+  ModeTitle.cpp
+  ModeManager.cpp
+  Model.cpp
+  ModeGameOver.cpp
+  ModeGame.cpp
+  Mode.cpp
+  Mesh.cpp
+  main.cpp
+  LightManager.cpp
+  Input.cpp
+  Hud.cpp
+  Generating Code...
+  Compiling...
+  GeometryBuilder.cpp
+  GameObjectManager.cpp
+  GameObject.cpp
+  FX.cpp
+  File.cpp
+  Explosion.cpp
+  Error.cpp
+  D3DUtil.cpp
+  D3D.cpp
+  CRC.cpp
+  Camera.cpp
+  Bullet.cpp
+  Asteroid.cpp
+  Generating Code...
+  AstroBlaster_Sound.vcxproj -> F:\P4G\Tutorials\15.AstroBlaster_Sound\AstroBlaster_Sound\../bin/AstroBlaster_Sound.exe
+  AstroBlaster_Sound.vcxproj -> ../bin/AstroBlaster_Sound.pdb (Partial PDB)

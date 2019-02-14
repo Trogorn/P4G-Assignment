@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="FX">
+      <UniqueIdentifier>{29c93b7f-16d5-4d6d-b682-f9268d9335df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{6f04bc3f-e2c6-4834-af3c-405da5197aca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modes">
+      <UniqueIdentifier>{96ba078b-7fba-406b-b058-4e04cfd82f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{cb697cad-2e61-4d0a-b9cc-7ca68d36cb8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{49fd8852-3b86-40de-965d-af029f9388e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects">
+      <UniqueIdentifier>{547a89ff-e2c0-4300-a22f-7408b433321f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CRC.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Error.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilsDefines.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DUtil.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryBuilder.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Mode.cpp">
+      <Filter>Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="ModeManager.cpp">
+      <Filter>Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="ModeTitle.cpp">
+      <Filter>Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="FX.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderTypes.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Starfield.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="ModeGameOver.cpp">
+      <Filter>Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="ModeGame.cpp">
+      <Filter>Modes</Filter>
+    </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="ShipController.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Warp.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnim.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Explosion.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Hud.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="UserFolder.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CRC.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Error.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilsDefines.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DUtil.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Mode.h">
+      <Filter>Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeManager.h">
+      <Filter>Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeTitle.h">
+      <Filter>Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryBuilder.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FX.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderTypes.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Starfield.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeGameOver.h">
+      <Filter>Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeGame.h">
+      <Filter>Modes</Filter>
+    </ClInclude>
+    <ClInclude Include="Ship.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipController.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Warp.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteAnim.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="UserFolder.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\FX\LightHelper.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\Constants.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\TextureVS.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\PSCore.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\PSUnlitNoTex.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\PSLitNoTex.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\PSLitTex.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\PSUnlitTex.hlsl">
+      <Filter>FX</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
