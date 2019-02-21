@@ -67,6 +67,9 @@ private:
 SINGLETON_GET(GameObjectManager);
 
 //a convenience macro to stop us repeating ourselves
+// Retrieves next free object from a pool of objects
+// pObj Pointer to object to return retrieved object
+// aClass is the type of object to try and find in the pool of objects
 #define GET_NEXT_FREE_OBJ(pObj, aClass)		\
 	pObj=dynamic_cast<aClass*>( GetGameObjectManager()->GetNextFree(aClass::CalcType()));	
 

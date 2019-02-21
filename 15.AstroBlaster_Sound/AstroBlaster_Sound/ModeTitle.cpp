@@ -142,7 +142,7 @@ void ModeTitle::LoadWorker()
 	ms->CreateFrom("../bin/data/asteroid1.x", gd3dDevice, FX::GetMyFX()->mCache);
 	ResetMaterials(*ms, Vector4(1, 1, 1, 0), Vector4(1, 1, 1, 0), Vector4(0.05f, 0.05f, 0.05f, 5));
 	ms = &GetMeshManager()->CreateMesh("barrel");
-	ms->CreateFrom("../bin/data/barrel/barrel_unsmoothed.FBX", gd3dDevice, FX::GetMyFX()->mCache);
+	ms->CreateFrom("../bin/data/barrel_mine/Barrel.FBX", gd3dDevice, FX::GetMyFX()->mCache);
 	ResetMaterials(*ms, Vector4(1, 1, 1, 0), Vector4(1, 1, 1, 0), Vector4(0.05f, 0.07f, 0.05f, 50));
 
 	FX::MyFX& fx = *FX::GetMyFX();

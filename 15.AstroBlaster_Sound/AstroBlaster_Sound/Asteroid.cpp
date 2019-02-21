@@ -23,7 +23,7 @@ Asteroid::Asteroid() :
 {
 	//we need our model loading, but we don't own models, we just request them
 	FX::MyFX& fx = *FX::GetMyFX();
-	Mesh *mesh = GetMeshManager()->GetMesh("rock");
+	Mesh *mesh = GetMeshManager()->GetMesh("barrel");
 	assert(mesh);
 	GetModel().Initialise(*mesh);
 }
@@ -89,7 +89,7 @@ void Asteroid::TakeDamage(float damage, const GameObject *pOther)
 			mag=250;
 			break;
 		case AsteroidType::LARGE:
-			mExplosion.Play(GetPosition(), true,"largeExplosion");
+			mExplosion.Play(GetPosition(), true, "largeExplosion");
 			score=100;
 			mag=350;
 			break;
@@ -188,10 +188,10 @@ void Asteroid::Render()
 		scale=0.1f;
 		break;
 	case AsteroidType::MEDIUM:
-		scale=0.05f;
+		scale=0.5f;
 		break;
 	case AsteroidType::SMALL:
-		scale=0.025f;
+		scale=0.25f;
 		break;
 	}
 	GetModel().GetScale() = Vector3(scale, scale, scale);

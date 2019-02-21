@@ -128,6 +128,9 @@
     <ClCompile Include="UserFolder.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CRC.h">
@@ -228,6 +231,9 @@
     </ClInclude>
     <ClInclude Include="UserFolder.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
