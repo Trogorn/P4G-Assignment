@@ -23,7 +23,7 @@ Asteroid::Asteroid() :
 {
 	//we need our model loading, but we don't own models, we just request them
 	FX::MyFX& fx = *FX::GetMyFX();
-	Mesh *mesh = GetMeshManager()->GetMesh("barrel");
+	Mesh *mesh = GetMeshManager()->GetMesh("rock");
 	assert(mesh);
 	GetModel().Initialise(*mesh);
 }
@@ -188,10 +188,10 @@ void Asteroid::Render()
 		scale=0.1f;
 		break;
 	case AsteroidType::MEDIUM:
-		scale=0.5f;
+		scale=0.05f;
 		break;
 	case AsteroidType::SMALL:
-		scale=0.25f;
+		scale=0.025f;
 		break;
 	}
 	GetModel().GetScale() = Vector3(scale, scale, scale);

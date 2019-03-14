@@ -2,6 +2,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#include <d3d11.h>
 #include "SimpleMath.h"
 // Application includes
 #include "GameObject.h"
