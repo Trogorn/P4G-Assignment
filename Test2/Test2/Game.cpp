@@ -2,7 +2,7 @@
 #include "D3D.h"
 #include "Game.h"
 #include "GeometryBuilder.h"
-
+#include <time.h>
 using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -16,7 +16,15 @@ void Game::OnResize(int screenWidth, int screenHeight)
 		screenWidth = screenHeight = screenWidth;
 	OnResize_Default(screenWidth, screenHeight);
 }
-
+Vector3 Game::AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) {
+	float returnX = minXAvoid;
+	float returnZ = minZAvoid;
+	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) {
+		returnX = GetRandom(minX, maxX);
+		returnZ = GetRandom(minZ, maxZ);
+	}
+	return Vector3(returnX, y, returnZ);
+}
 void Game::Initialise()
 {
 	mFX.Init(gd3dDevice);
@@ -26,18 +34,20 @@ void Game::Initialise()
 	MaterialExt mat = mQuad1.GetMesh().GetSubMesh(0).material;
 	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
 	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+	mat.texture = "building1.dds";
 	mQuad1.GetPosition() = Vector3(0, 0, 0);
 	mQuad1.GetRotation() = Vector3(0, 0, 0);
 	mQuad1.GetScale() = Vector3(3, 1, 3);
 	mQuad1.SetOverrideMat(&mat);
 
-	//main floor
+	//avoided floor
 	mQuad2.Initialise(BuildQuad(mMeshMgr));
 	mat = mQuad2.GetMesh().GetSubMesh(0).material;
 	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-	mQuad2.GetPosition() = Vector3(0, 0, 0);
+	mat.texture = "building2.dds";
+	mQuad2.GetPosition() = Vector3(-1, 0.1, -1);
 	mQuad2.GetRotation() = Vector3(0, 0, 0);
-	mQuad2.GetScale() = Vector3(3, 1, 3);
+	mQuad2.GetScale() = Vector3(1, 1, 1);
 	mQuad2.SetOverrideMat(&mat);
 
 	//Skyscraper
@@ -49,12 +59,26 @@ void Game::Initialise()
 	mat.texture = "building1.dds"; //text label for debugging
 	mCube.SetOverrideMat(&mat);
 	//Block of flats
-
+	SeedRandom(time(NULL));
 	mFlats.clear();
 	mFlats.insert(mFlats.begin(), 100, mCube);
+	float xMin = -3;
+	float xMax = 3;
+	float zMin = -3;
+	float zMax = 3;
+	float minXAvoid = -2;
+	float maxXAvoid = 0;
+	float minZAvoid = -2;
+	float maxZAvoid = 0;
 	for (int i = 0; i < 100; i++) {
 	mFlats[i].GetScale() = Vector3(0.1f, 0.25f, 0.1f);
-	mFlats[i].GetPosition() = Vector3(GetRandom(-2.f,1.f), 0, GetRandom(-2.f, 1.f));
+	float mFlatX = -0.5;
+	float mFlatZ = -0.5;
+	while ((mFlatX < 0 && mFlatX > -2) && (mFlatZ < 0 && mFlatZ > -2)) {
+		mFlatX = GetRandom(xMin, xMax);
+		mFlatZ = GetRandom(zMin, zMax);
+	}
+	mFlats[i].GetPosition() = AvoidQuad(0, xMin, xMax, zMin, zMax, minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
 	mFlats[i].GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
 	switch (GetRandom(0, 3)) {
 	case 0:

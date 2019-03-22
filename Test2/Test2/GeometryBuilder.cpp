@@ -6,10 +6,10 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "D3DUtil.h"
-
+#include <string> 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-
+int i = 0;
 Mesh& BuildQuad(MeshManager& mgr)
 {
 	// Create vertex buffer
@@ -27,7 +27,9 @@ Mesh& BuildQuad(MeshManager& mgr)
 		0, 1, 2,
 		0, 2, 3
 	};
-	Mesh &mesh = mgr.CreateMesh("quad");
+	std::string s = std::to_string(i);
+	Mesh &mesh = mgr.CreateMesh("quad" + s);
+	i++;
 	MaterialExt mat = MaterialExt::default;
 	mat.gfxData.Diffuse = Vector4(1, 1, 1, 1);
 	mat.gfxData.Ambient = Vector4(0.1f, 0.1f, 0.1f, 1);
