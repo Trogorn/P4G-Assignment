@@ -21,19 +21,24 @@ void Game::Initialise()
 {
 	mFX.Init(gd3dDevice);
 
-
-
-
-	//wood floor
-	mQuad.Initialise(BuildQuad(mMeshMgr));
-	MaterialExt mat = mQuad.GetMesh().GetSubMesh(0).material;
+	//main floor
+	mQuad1.Initialise(BuildQuad(mMeshMgr));
+	MaterialExt mat = mQuad1.GetMesh().GetSubMesh(0).material;
 	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
-	mat.pTextureRV = mFX.mCache.LoadTexture("ground.dds", true, gd3dDevice);
-	mat.texture = "ground.dds";
-	mQuad.GetPosition() = Vector3(0, 0, 0);
-	mQuad.GetRotation() = Vector3(0, 0, 0);
-	mQuad.GetScale() = Vector3(3, 1, 3);
-	mQuad.SetOverrideMat(&mat);
+	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+	mQuad1.GetPosition() = Vector3(0, 0, 0);
+	mQuad1.GetRotation() = Vector3(0, 0, 0);
+	mQuad1.GetScale() = Vector3(3, 1, 3);
+	mQuad1.SetOverrideMat(&mat);
+
+	//main floor
+	mQuad2.Initialise(BuildQuad(mMeshMgr));
+	mat = mQuad2.GetMesh().GetSubMesh(0).material;
+	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
+	mQuad2.GetPosition() = Vector3(0, 0, 0);
+	mQuad2.GetRotation() = Vector3(0, 0, 0);
+	mQuad2.GetScale() = Vector3(3, 1, 3);
+	mQuad2.SetOverrideMat(&mat);
 
 	//Skyscraper
 	mCube.Initialise(BuildCube(mMeshMgr));
@@ -43,48 +48,30 @@ void Game::Initialise()
 	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
 	mat.texture = "building1.dds"; //text label for debugging
 	mCube.SetOverrideMat(&mat);
-
 	//Block of flats
 
 	mFlats.clear();
 	mFlats.insert(mFlats.begin(), 100, mCube);
-	int w = (int)sqrt(mFlats.size());
-
-	for (int x = 0; x < w; ++x)
-	{
-		for (int y = 0; y < w; ++y)
-
-		{
-			//mFlats
-			float xo = -2 + (float)x*0.35f;
-			float zo = -1.1 + (float)y*0.35f;
-			float rY = GetRandom(0.2f, 0.3f);
-
-			mFlats[y * w + x].GetScale() = Vector3(0.1f, rY, 0.1f);
-			mFlats[y * w + x].GetPosition() = Vector3(xo, rY, zo);
-			//mFlats[y * w + x].GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
-
-			int choice = GetRandom(0, 4);
-			switch (choice)
-			{
-			case 0:
-				mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-				break;
-			case 1:
-				mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-				break;
-			case2:
-				mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
-				break;
-			case3:
-				mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
-				break;
-			}
-
-			mCube.SetOverrideMat(&mat);
-		}
+	for (int i = 0; i < 100; i++) {
+	mFlats[i].GetScale() = Vector3(0.1f, 0.25f, 0.1f);
+	mFlats[i].GetPosition() = Vector3(GetRandom(-2.f,1.f), 0, GetRandom(-2.f, 1.f));
+	mFlats[i].GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
+	switch (GetRandom(0, 3)) {
+	case 0:
+		mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+		break;
+	case 1:
+		mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
+		break;
+	case 2:
+		mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
+		break;
+	case 3:
+		mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
+		break;
 	}
-
+	mCube.SetOverrideMat(&mat);
+	}
 	FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 
 }
@@ -120,7 +107,8 @@ void Game::Render(float dTime)
 
 
 	//floor
-	mFX.Render(mQuad, gd3dImmediateContext);
+	mFX.Render(mQuad1, gd3dImmediateContext);
+	mFX.Render(mQuad2, gd3dImmediateContext);
 	mFX.Render(mCube, gd3dImmediateContext); // Skyscraper
 	for (int i = 0; i < (int)mFlats.size(); ++i) //Flats
 		mFX.Render(mFlats[i], gd3dImmediateContext);

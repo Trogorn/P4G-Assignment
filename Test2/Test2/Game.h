@@ -24,7 +24,7 @@ public:
 	const DirectX::SimpleMath::Vector3 mDefCamPos = DirectX::SimpleMath::Vector3(0, 2, -5);
 	DirectX::SimpleMath::Vector3 mCamPos = DirectX::SimpleMath::Vector3(0, 2, -5);
 	MeshManager mMeshMgr;
-	Model mQuad, mCube, mTent, mQuadPyramid, mLight;
+	Model mQuad1, mQuad2, mCube, mTent, mQuadPyramid, mLight;
 	std::vector<Model> mFlats;
 
 	FX::MyFX mFX;
