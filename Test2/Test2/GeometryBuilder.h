@@ -2,7 +2,7 @@
 #define GEOMETRYBUILDER_H
 
 class MeshManager;
-class Model;
+//class Model;
 class Mesh;
 
 Mesh& BuildQuad(MeshManager& mgr);

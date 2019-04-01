@@ -3,11 +3,11 @@
 
 #include <string>
 #include <d3d11.h>
-
+#include "Model_Kami.h"
 #include "ShaderTypes.h"
 #include "D3DUtil.h"
 
-class Model;
+//class Model;
 
 namespace FX
 {
@@ -88,7 +88,7 @@ public:
 	}
 	bool Init(ID3D11Device* pd3dDevice);
 	void Release();
-	void Render(Model& model, ID3D11DeviceContext *pD3DContext, MaterialExt* pOverrideMat = nullptr);
+	void Render(Model_Kami& model, ID3D11DeviceContext *pD3DContext, MaterialExt* pOverrideMat = nullptr);
 
 	TexCache mCache;
 

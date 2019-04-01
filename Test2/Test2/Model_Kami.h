@@ -1,22 +1,26 @@
-#ifndef MODEL_H
-#define MODEL_H
+#ifndef MODEL_KAMI_H
+#define MODEL_KAMI_H
 
 #include <cassert>
 #include "SimpleMath.h"
+#include "ShaderTypes.h"
 
 class Mesh;
 
-class Model
+class Model_Kami
 {
 public:
-	void Initialise(const std::string& meshFileName);
+
+	//void Initialise(const std::string& meshFileName);
 	void Initialise(Mesh &mesh);
 	
 	DirectX::SimpleMath::Vector3& GetPosition() { return mPosition; }
 	DirectX::SimpleMath::Vector3& GetScale() { return mScale; }
 	DirectX::SimpleMath::Vector3& GetRotation() { return mRotation; }
 	void GetWorldMatrix(DirectX::SimpleMath::Matrix& w);
-	Mesh& GetMesh() {
+
+	Mesh& GetMesh() 
+	{
 		assert(mpMesh);
 		return *mpMesh;
 	}
@@ -33,7 +37,7 @@ public:
 		mUseOverrideMat = true;
 		mOverrideMaterial = *pMat;
 	}
-	Model& operator=(const Model& m)
+	Model_Kami& operator=(const Model_Kami& m)
 	{
 		mpMesh = m.mpMesh;
 		mPosition = m.mPosition;

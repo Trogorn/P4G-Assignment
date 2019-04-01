@@ -6,10 +6,11 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "D3DUtil.h"
-#include <string> 
+#include <string>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-int i = 0;
+	int i = 0;
+
 Mesh& BuildQuad(MeshManager& mgr)
 {
 	// Create vertex buffer

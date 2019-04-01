@@ -6,7 +6,6 @@
 #include "D3D.h"
 #include "D3DUtil.h"
 #include "FX.h"
-#include "Model.h"
 #include "Mesh.h"
 
 using namespace std;
@@ -379,7 +378,7 @@ void MyFX::Release()
 		ReleaseCOM(mpRasterStates[i]);
 }
 
-void MyFX::Render(Model& model, ID3D11DeviceContext *pD3DContext, MaterialExt* pOverrideMat)
+void MyFX::Render(Model_Kami& model, ID3D11DeviceContext *pD3DContext, MaterialExt* pOverrideMat)
 {
 	//setup shaders
 	pD3DContext->VSSetShader(mpVS, nullptr, 0);
