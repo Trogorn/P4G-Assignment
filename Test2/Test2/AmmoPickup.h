@@ -6,5 +6,8 @@ class AmmoPickup :
 public:
 	AmmoPickup();
 	~AmmoPickup();
+	int BestowAmmo(/*CarAmmo*/);
+private:
+	int BestowedAmmunition = 50;
 };
 

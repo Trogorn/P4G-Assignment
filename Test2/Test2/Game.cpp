@@ -105,6 +105,9 @@ void Game::Initialise()
 	float maxXAvoid = 0;
 	float minZAvoid = -2;
 	float maxZAvoid = 0;
+	float xo = -2 + (float)xMin*0.35f;
+	float zo = -1.1 + (float)zMin*0.35f;
+	float rY = GetRandom(0.2f, 0.3f);
 	for (int i = 0; i < 100; i++) {
 		mFlats[i]->GetScale() = Vector3(0.1f, 0.25f, 0.1f);
 		float mFlatX = -0.5;
@@ -115,6 +118,7 @@ void Game::Initialise()
 		}
 		mFlats[i]->GetPosition() = AvoidQuad(0, xMin, xMax, zMin, zMax, minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
+		//mFlats[y * w + x]->GetScale() = Vector3(0.1f, rY, 0.1f);
 		switch (GetRandom(0, 3)) {
 		case 0:
 			mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
