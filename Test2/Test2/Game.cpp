@@ -119,7 +119,7 @@ void Game::Initialise()
 			mFlatX = GetRandom(xMin, xMax);
 			mFlatZ = GetRandom(zMin, zMax);
 		}
-		mFlats[i]->GetPosition() = AvoidQuad(rY, xMin, xMax, zMin, zMax, minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
+		mFlats[i]->GetPosition() = AvoidQuad(rY, xMin + 0.1f, xMax - 0.1f, zMin + 0.1f, zMax - 0.1f, minXAvoid -.5f, maxXAvoid + .5f, minZAvoid -.5f , maxZAvoid + .5f);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
 		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
 		switch (GetRandom(0, 3)) {
