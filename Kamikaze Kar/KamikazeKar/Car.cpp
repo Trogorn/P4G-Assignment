@@ -5,12 +5,13 @@ Car::Car():GameObject()
 {
 }
 
-void Car::Initialise(Model* mModel, float turnSpeed, float drag, float acceleration)
+void Car::Initialise(Model* mModel, float turnSpeed, float drag, float acceleration, float maxSpeed)
 {
 	this->speed = speed;
 	this->turnSpeed = turnSpeed;
 	this->drag = drag;
 	this->acceleration = acceleration;
+	this->maxSpeed = maxSpeed;
 	direction = direction.UnitZ;
 	//GameObject* pGO = this;
 	//pGO->Initialise(mModel);

@@ -168,18 +168,8 @@ void PlayerCar::Debug()
 	//ss += std::to_string(GetForward()->y);
 	//ss += "\nForward Z: ";
 	//ss += std::to_string(GetForward()->z);
-	ss += "\nCamera X: ";
-	ss += std::to_string(camera.GetCameraPosition()->x);
-	ss += "\nCamera Y: ";
-	ss += std::to_string(camera.GetCameraPosition()->y);
-	ss += "\nCamera Z: ";
-	ss += std::to_string(camera.GetCameraPosition()->z);
-	ss += "\nCameraOffset X: ";
-	ss += std::to_string(CameraOffSetV.x * CameraOffSetD);
-	ss += "\nCameraOffset Y: ";
-	ss += std::to_string(CameraOffSetV.y * CameraOffSetD);
-	ss += "\nCameraOffset Z: ";
-	ss += std::to_string(CameraOffSetV.z * CameraOffSetD);
+	ss += "\nSpeed: ";
+	ss += std::to_string(speed);
 	MyDebug::Message(ss);
 }
 

@@ -9,7 +9,7 @@ class Car : public GameObject
 {
 public:
 	Car();
-	void Initialise(Model* mModel, float turnSpeed, float drag, float acceleration);
+	void Initialise(Model* mModel, float turnSpeed, float drag, float acceleration, float maxSpeed);
 	void OnCollide(const GameObject* apOther);
 	void Update(float dTime);
 	virtual ~Car();
@@ -26,6 +26,7 @@ protected:
 	float det;
 	float rotationAngle;
 
+	float speed;
 	
 private:
 
@@ -36,8 +37,8 @@ private:
 	int health;
 	float turnSpeed;
 	float drag;
-	float speed;
 	float acceleration;
+	float maxSpeed;
 
 	//void Update(float) overridden
 
