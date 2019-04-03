@@ -7,29 +7,39 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 /*
 */
-Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) 
+Vector3 AvoidQuad(float y, Vector4 generalQuad, Vector4 avoidQuad, Vector2 previousLocation)
 {
-	/*AvoidQuad parameters explained
-float y: the actual Y value at which you want to spawn
-float minX, maxX: the minimum and maximum value for X in the TOTAL map quad
-float minZ, maxZ:  the minimum and maximum value for Z in the TOTAL map quad
-float minXAvoid, maxXAvoid: the minimum and maximum value for X in the AVOIDED quad
-float minZAvoid, maxZAvoid:  the minimum and maximum value for Z in the AVOIDED quad
-
-while loop keeps generating X and Z values until the point is not within the avoided quad
-
-The vector 3 returned has float y parameter and an X and Z value outside the avoided quad
-*/
-	// This needs to know the previous Vector3 and include a check to avoid this Vector
-	float returnX = minXAvoid;
-	float returnZ = minZAvoid;
-	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) 
-		// Needs to include an initial condition to not be the same X and Z as previous one
+	float& minX = generalQuad.w; //the minimum value for X in the TOTAL map quad
+	float& maxX = generalQuad.x; //the maximum value for X in the TOTAL map quad
+	float& minZ = generalQuad.y; //the minimum value for Z in the TOTAL map quad
+	float& maxZ = generalQuad.z; //the maximum value for Z in the TOTAL map quad
+	float& minXAvoid = avoidQuad.w; //minimum value for X in the AVOIDED quad
+	float& maxXAvoid = avoidQuad.x; //maximum value for X in the AVOIDED quad
+	float& minZAvoid = avoidQuad.y; //minimum value for Z in the AVOIDED quad
+	float& maxZAvoid = avoidQuad.z; //maximum value for Z in the AVOIDED quad
+	float& previousX = previousLocation.x; //X value for previous object's location
+	float& previousZ = previousLocation.y; //Z value for previous object's location
+	float& returnX = generalQuad.w; //Return X value initially set within generalQuad
+	float& returnZ = generalQuad.y; //Return Z value initially set within generalQuad
+	float xDifference = 0.f; //Difference between returnX and previousX
+	float zDifference = 0.f; //Difference between returnZ and previousZ
+	float xMaxDifference = 0.1; //Minimum X distance from previous location
+	float zMaxDifference = 0.1; //Minimum Z distance from previous location
+	while (((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) || ((xDifference < xMaxDifference && xDifference > -xMaxDifference) && (zDifference < zMaxDifference && zDifference > -zMaxDifference)))
 	{
-		returnX = GetRandom(minX, maxX);
-		returnZ = GetRandom(minZ, maxZ);
-	}
+		//while (point is within avoidQuad) OR (point is within 0.1 radius of previous)
 
+		//Above while conditions in more detail
+		//(returnX is within avoidQuad) AND (returnZ is within avoidQuad)
+		//OR
+		//(xDifference is less than 0.1) AND (xDifference is more than -0.1)
+		//AND
+		//(zDifference is less than 0.1) AND (zDifference is more than -0.1)
+		returnX = GetRandom(minX, maxX);
+		xDifference = returnX - previousX;
+		returnZ = GetRandom(minZ, maxZ);
+		zDifference = returnZ - previousZ;
+	}
 	return Vector3(returnX, y, returnZ);
 }
 
@@ -131,6 +141,9 @@ void Game::Initialise()
 
 
 
+		Vector4 avoidedQuad = Vector4(minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
+		Vector4 generalQuad = Vector4(xMin, xMax, zMin, zMax);
+		Vector2 previousPosition;
 	for (int i = 0; i < 100; i++) 
 	{
 		float rY = GetRandom(0.2f, 0.3f);
@@ -141,22 +154,15 @@ void Game::Initialise()
 		float xMinDifference = 0.1;
 		float zDifference = 0;
 		float zMinDifference = 0.1;
-		while ((mFlatX < xMax && mFlatX > xMin) && (mFlatZ < zMax && mFlatZ > zMax))
-		{	
 			if (i = 0)
 			{
-				mFlatX = GetRandom(xMin, xMax);
-				mFlatZ = GetRandom(zMin, zMax);
+				previousPosition = Vector2(0, 0);
 			}
-			else if ((xDifference < xMinDifference || xDifference < -xDifference) && (zDifference < zMinDifference || zDifference < -zDifference))
+			else
 			{
-				mFlatX = GetRandom(xMin, xMax);
-				xDifference = mFlatX - mFlats[i - 1]->GetPosition().x;
-				mFlatZ = GetRandom(zMin, zMax);
-				zDifference = mFlatZ - mFlats[i - 1]->GetPosition().z;
+				previousPosition = Vector2(mFlats[i - 1]->GetPosition().x, mFlats[i - 1]->GetPosition().y);
 			}
-		}
-		mFlats[i]->GetPosition() = AvoidQuad(rY, xMin, xMax, zMin, zMax, minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
+		mFlats[i]->GetPosition() = AvoidQuad(rY, generalQuad, avoidedQuad, previousPosition);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
 		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
 		switch (GetRandom(0, 3)) {
@@ -174,6 +180,7 @@ void Game::Initialise()
 			break;
 		}
 		mCube->SetOverrideMat(&mat);
+		}
 
 		//*/
 	//ELLIOT block of flats
