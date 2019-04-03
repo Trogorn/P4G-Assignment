@@ -8,7 +8,7 @@ GameObject::GameObject()
 	//Set forward vector to 0,0,1
 }
 
-void GameObject::Initialise(Model* mModel)
+void GameObject::Initialise(Model_Kami* mModel)
 {
 	this->mModel = mModel;
 }

@@ -7,13 +7,29 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 /*
 */
-Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) {
+Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) 
+{
+	/*AvoidQuad parameters explained
+float y: the actual Y value at which you want to spawn
+float minX, maxX: the minimum and maximum value for X in the TOTAL map quad
+float minZ, maxZ:  the minimum and maximum value for Z in the TOTAL map quad
+float minXAvoid, maxXAvoid: the minimum and maximum value for X in the AVOIDED quad
+float minZAvoid, maxZAvoid:  the minimum and maximum value for Z in the AVOIDED quad
+
+while loop keeps generating X and Z values until the point is not within the avoided quad
+
+The vector 3 returned has float y parameter and an X and Z value outside the avoided quad
+*/
+	// This needs to know the previous Vector3 and include a check to avoid this Vector
 	float returnX = minXAvoid;
 	float returnZ = minZAvoid;
-	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) {
+	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) 
+		// Needs to include an initial condition to not be the same X and Z as previous one
+	{
 		returnX = GetRandom(minX, maxX);
 		returnZ = GetRandom(minZ, maxZ);
 	}
+
 	return Vector3(returnX, y, returnZ);
 }
 
@@ -49,7 +65,7 @@ void Game::Initialise()
 	mat = mQuad2->GetMesh().GetSubMesh(0).material;
 	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
 	mat.texture = "building2.dds";
-	mQuad2->GetPosition() = Vector3(-1, 0.1, -1);
+	mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
 	mQuad2->GetRotation() = Vector3(0, 0, 0);
 	mQuad2->GetScale() = Vector3(1, 1, 1);
 	mQuad2->SetOverrideMat(&mat);
@@ -76,6 +92,7 @@ void Game::Initialise()
 	///*
 	SeedRandom(time(NULL));
 	mFlats.clear();
+	int w = (int)sqrt(mFlats.size());
 	//mFlats.insert(mFlats.begin(), 100, mCube);
 	for (size_t i = 0; i < 100; i++)
 	{
@@ -85,24 +102,63 @@ void Game::Initialise()
 		temp->SetOverrideMat(&mat);
 		mFlats.push_back(temp);
 	}
-	float xMin = -3;
-	float xMax = 3;
-	float zMin = -3;
-	float zMax = 3;
-	float minXAvoid = -2;
-	float maxXAvoid = 0;
-	float minZAvoid = -2;
-	float maxZAvoid = 0;
-	for (int i = 0; i < 100; i++) {
-		mFlats[i]->GetScale() = Vector3(0.1f, 0.25f, 0.1f);
+	float xMin = -1.9;
+	float xMax = 0;
+	float zMin = -2;
+	float zMax = 0;
+	float minXAvoid = -1.5;
+	float maxXAvoid = -0.5;
+	float minZAvoid = -1.5;
+	float maxZAvoid = -0.5;
+
+	/*for (int i = 0; i < 100; ++i)
+	{
+		bool busy(true);
+		while (busy)
+		{
+			Vector3 newPos = rand();
+			busy = false;
+			for (auto& obj : mFlats)
+			{
+				if ((newPos - obj->GetPosition()).Length() < 50)
+				{
+					busy = true;
+					break;
+				}
+			}
+		}
+	}*/
+
+
+
+	for (int i = 0; i < 100; i++) 
+	{
+		float rY = GetRandom(0.2f, 0.3f);
+		mFlats[i]->GetScale() = Vector3(0.1f, rY , 0.1f);
 		float mFlatX = -0.5;
 		float mFlatZ = -0.5;
-		while ((mFlatX < 0 && mFlatX > -2) && (mFlatZ < 0 && mFlatZ > -2)) {
-			mFlatX = GetRandom(xMin, xMax);
-			mFlatZ = GetRandom(zMin, zMax);
+		float xDifference = 0;
+		float xMinDifference = 0.1;
+		float zDifference = 0;
+		float zMinDifference = 0.1;
+		while ((mFlatX < xMax && mFlatX > xMin) && (mFlatZ < zMax && mFlatZ > zMax))
+		{	
+			if (i = 0)
+			{
+				mFlatX = GetRandom(xMin, xMax);
+				mFlatZ = GetRandom(zMin, zMax);
+			}
+			else if ((xDifference < xMinDifference || xDifference < -xDifference) && (zDifference < zMinDifference || zDifference < -zDifference))
+			{
+				mFlatX = GetRandom(xMin, xMax);
+				xDifference = mFlatX - mFlats[i - 1]->GetPosition().x;
+				mFlatZ = GetRandom(zMin, zMax);
+				zDifference = mFlatZ - mFlats[i - 1]->GetPosition().z;
+			}
 		}
-		mFlats[i]->GetPosition() = AvoidQuad(0, xMin, xMax, zMin, zMax, minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
+		mFlats[i]->GetPosition() = AvoidQuad(rY, xMin, xMax, zMin, zMax, minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
+		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
 		switch (GetRandom(0, 3)) {
 		case 0:
 			mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
