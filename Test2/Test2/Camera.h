@@ -4,6 +4,7 @@
 #include "FX.h"
 #include "MyUtils.h"
 #include "GameObject.h"
+#include "WindowUtils.h"
 
 using namespace DirectX::SimpleMath;
 class Camera
