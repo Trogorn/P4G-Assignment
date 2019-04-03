@@ -97,10 +97,12 @@ void Game::Initialise()
 	for (size_t i = 0; i < 100; i++)
 	{
 		// Todo - Clear this later on
-		auto temp = new Model_Kami();
+		auto* temp = new Model_Kami();
 		temp->Initialise(mMeshMgr.GetMesh("box"));
 		temp->SetOverrideMat(&mat);
 		mFlats.push_back(temp);
+		//delete temp;
+		//temp = nullptr;
 	}
 	float xMin = -3;
 	float xMax = 3;
