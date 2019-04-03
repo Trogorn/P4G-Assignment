@@ -14,11 +14,6 @@ void Turret::Initialise(const Vector3& pos, const DirectX::SimpleMath::Vector3& 
 	yaw = pitch = roll = 0;
 
 
-	
-
-	
-
-	
 }
 
 void Turret::SetPosition(Vector3 position)
