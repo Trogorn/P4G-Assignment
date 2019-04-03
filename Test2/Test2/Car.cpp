@@ -43,6 +43,8 @@ void Car::UpdateControlVector()
 void Car::UpdateMovement(float dTime)
 {
 
+	//Redo this to make sure its all local
+
 	//ACCELERATION/DRAG---------------------------------------------------------------------------------------------------------------
 
 	//Control vector contains:
@@ -85,14 +87,24 @@ void Car::UpdateMovement(float dTime)
 
 void Car::UpdateGameObject()
 {
+
+	//Update this to make sure its all local 2 World space
+
 	//Get Reference to Position Vector
 	Vector3* pPosition = GetPosition();
 
 	//Pointer
 	Vector3* pRotation = GetRotation();
 
-	if (speed != 0)
-		*pPosition += (speed * direction);
+	//Update Speed
+
+	//Position needs to equal direction*speed converted into world space?
+
+	if (speed > 0.01 || speed < 0.01)
+		*pPosition = Vector3::Transform(speed*direction, GetWorldMatrix());
+
+	/*if (speed != 0)
+		*pPosition += (speed * direction);*/
 
 	//Rotation
 

@@ -30,7 +30,7 @@ protected:
 	
 private:
 
-	//Relative unit vector indicating direction of vehicle
+	//Local space vector
 	Vector3 direction;
 
 	
