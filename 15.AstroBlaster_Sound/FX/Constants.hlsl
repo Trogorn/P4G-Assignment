@@ -49,3 +49,15 @@ struct VertexOut
 	float2 Tex		: TEXCOORD;
 };
 
+struct VertexLineIn
+{
+	float3 PosH		: POSITION;
+	float4 Colour	: COLOUR;
+};
+
+struct VertexLineOut
+{
+	float4 PosH		: SV_POSITION;
+	float4 Colour	: COLOUR;
+};
+
