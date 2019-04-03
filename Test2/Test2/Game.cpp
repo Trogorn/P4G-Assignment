@@ -66,21 +66,21 @@ void Game::Initialise()
 	mQuad1->Initialise(BuildQuad(mMeshMgr));
 	MaterialExt mat = mQuad1->GetMesh().GetSubMesh(0).material;
 	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
-	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-	mat.texture = "building1.dds";
+	mat.pTextureRV = mFX.mCache.LoadTexture("green.dds", true, gd3dDevice);
+	mat.texture = "green.dds";
 	mQuad1->GetPosition() = Vector3(0, 0, 0);
 	mQuad1->GetRotation() = Vector3(0, 0, 0);
-	mQuad1->GetScale() = Vector3(3, 1, 3);
+	mQuad1->GetScale() = Vector3(10, 1, 10);
 	mQuad1->SetOverrideMat(&mat);
 
-	//avoided floor
+	//road (avoided floor)
 	mQuad2->Initialise(BuildQuad(mMeshMgr));
 	mat = mQuad2->GetMesh().GetSubMesh(0).material;
-	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-	mat.texture = "building2.dds";
-	mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
+	mat.pTextureRV = mFX.mCache.LoadTexture("road.dds", true, gd3dDevice);
+	mat.texture = "road.dds";
+	mQuad2->GetPosition() = Vector3(-1, 0.01f, 0);
 	mQuad2->GetRotation() = Vector3(0, 0, 0);
-	mQuad2->GetScale() = Vector3(1, 1, 1);
+	mQuad2->GetScale() = Vector3(1, 1, 10);
 	mQuad2->SetOverrideMat(&mat);
 	//*/
 
@@ -92,10 +92,10 @@ void Game::Initialise()
 	mCube = new Model_Kami();
 	mCube->Initialise(BuildCube(mMeshMgr));
 	mCube->GetScale() = Vector3(0.25f, 0.5f, 0.25f);
-	mCube->GetPosition() = Vector3(-1.f, 0.5f, 1.f);
+	mCube->GetPosition() = Vector3(1.f, 0.5f, 1.f);
 	mat = mCube->GetMesh().GetSubMesh(0).material;
-	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-	mat.texture = "building1.dds"; //text label for debugging
+	mat.pTextureRV = mFX.mCache.LoadTexture("bark.dds", true, gd3dDevice);
+	mat.texture = "bark.dds"; //text label for debugging
 	mCube->SetOverrideMat(&mat);
 	//*/
 
@@ -115,14 +115,14 @@ void Game::Initialise()
 		temp->SetOverrideMat(&mat);
 		mFlats.push_back(temp);
 	}
-	const float xMin = -3;
-	const float xMax = 3;
-	const float zMin = -3;
-	const float zMax = 3;
-	const float minXAvoid = -1.5;
+	const float xMin = -5;
+	const float xMax = 10;
+	const float zMin = -10;
+	const float zMax = 12;
+	const float minXAvoid = -2;
 	const float maxXAvoid = 0.5;
-	const float minZAvoid = -1.5;
-	const float maxZAvoid = 0.5;
+	const float minZAvoid = -5;
+	const float maxZAvoid = 15;
 
 	/*for (int i = 0; i < 100; ++i)
 	{
@@ -170,16 +170,16 @@ void Game::Initialise()
 		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
 		switch (GetRandom(0, 3)) {
 		case 0:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+			mat.pTextureRV = mFX.mCache.LoadTexture("bark.dds", true, gd3dDevice);
 			break;
 		case 1:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
+			mat.pTextureRV = mFX.mCache.LoadTexture("bark.dds", true, gd3dDevice);
 			break;
 		case 2:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
+			mat.pTextureRV = mFX.mCache.LoadTexture("bark.dds", true, gd3dDevice);
 			break;
 		case 3:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
+			mat.pTextureRV = mFX.mCache.LoadTexture("bark.dds", true, gd3dDevice);
 			break;
 		}
 		mCube->SetOverrideMat(&mat);
