@@ -96,6 +96,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AmmoPickup.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="CollideInto.cpp" />
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="D3DUtil.cpp" />
@@ -106,7 +108,11 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Model_Kami.cpp" />
+    <ClCompile Include="MyDebug.cpp" />
+    <ClCompile Include="MyUtils.cpp" />
+    <ClCompile Include="PlayerCar.cpp" />
     <ClCompile Include="Repair.cpp" />
     <ClCompile Include="ShaderTypes.cpp" />
     <ClCompile Include="Shootable.cpp" />
@@ -115,6 +121,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoPickup.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="CollideInto.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="D3DUtil.h" />
@@ -124,7 +132,11 @@
     <ClInclude Include="GeometryBuilder.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Model_Kami.h" />
+    <ClInclude Include="MyDebug.h" />
+    <ClInclude Include="MyUtils.h" />
+    <ClInclude Include="PlayerCar.h" />
     <ClInclude Include="Repair.h" />
     <ClInclude Include="ShaderTypes.h" />
     <ClInclude Include="Shootable.h" />

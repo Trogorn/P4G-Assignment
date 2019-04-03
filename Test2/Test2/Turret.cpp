@@ -112,12 +112,13 @@ Model_Kami* Turret::Shoot()
 		for (int i(0); i < mpMyVec->size(); i++)
 		{
 			float dummydistance(distance);
-			if (mpMyVec->at(i)->RetAlive() &&ray.Intersects(mpMyVec->at(i)->GetColider(), _Out_ dummydistance) && dummydistance < shortestdistrance)
+			//Bug here
+			/*if (mpMyVec->at(i)->RetAlive() &&ray.Intersects(mpMyVec->at(i)->GetColider(), _Out_ dummydistance) && dummydistance < shortestdistrance)
 			{
 				shortestdistrance = dummydistance;
 				box = mpMyVec->at(i);
 				hit = true;
-			}
+			}*/
 
 
 		}

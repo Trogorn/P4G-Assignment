@@ -19,6 +19,15 @@
     <Filter Include="data">
       <UniqueIdentifier>{6f04bc3f-e2c6-4834-af3c-405da5197aca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Car Stuff">
+      <UniqueIdentifier>{8f1dadb8-69c2-46ce-886e-72f11c4c15c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Car Stuff\Utils">
+      <UniqueIdentifier>{77dafcbe-01b4-4ea7-9dc5-d4b6f628b0aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{e7837291-c230-4077-abff-352dec2e9f5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D.cpp">
@@ -42,12 +51,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shootable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,14 +66,38 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model_Kami.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Turret.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Car Stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>Source Files\Car Stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCar.cpp">
+      <Filter>Source Files\Car Stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="MyDebug.cpp">
+      <Filter>Source Files\Car Stuff\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MyUtils.cpp">
+      <Filter>Source Files\Car Stuff\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_Kami.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryBuilder.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,12 +119,6 @@
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shootable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -113,14 +134,38 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model_Kami.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Turret.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Car Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Source Files\Car Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCar.h">
+      <Filter>Source Files\Car Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="MyDebug.h">
+      <Filter>Source Files\Car Stuff\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MyUtils.h">
+      <Filter>Source Files\Car Stuff\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_Kami.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Util</Filter>
+    </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryBuilder.h">
+      <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
