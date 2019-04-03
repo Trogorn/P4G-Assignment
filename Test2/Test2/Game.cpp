@@ -7,7 +7,8 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 /*
 */
-Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) {
+Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) 
+{
 	/*AvoidQuad parameters explained
 float y: the actual Y value at which you want to spawn
 float minX, maxX: the minimum and maximum value for X in the TOTAL map quad
@@ -22,7 +23,9 @@ The vector 3 returned has float y parameter and an X and Z value outside the avo
 	// This needs to know the previous Vector3 and include a check to avoid this Vector
 	float returnX = minXAvoid;
 	float returnZ = minZAvoid;
-	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) {
+	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) 
+		// Needs to include an initial condition to not be the same X and Z as previous one
+	{
 		returnX = GetRandom(minX, maxX);
 		returnZ = GetRandom(minZ, maxZ);
 	}
@@ -62,7 +65,7 @@ void Game::Initialise()
 	mat = mQuad2->GetMesh().GetSubMesh(0).material;
 	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
 	mat.texture = "building2.dds";
-	mQuad2->GetPosition() = Vector3(-1, 0.1, -1);
+	mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
 	mQuad2->GetRotation() = Vector3(0, 0, 0);
 	mQuad2->GetScale() = Vector3(1, 1, 1);
 	mQuad2->SetOverrideMat(&mat);
@@ -107,18 +110,45 @@ void Game::Initialise()
 	float maxXAvoid = 0;
 	float minZAvoid = -2;
 	float maxZAvoid = 0;
-	float xo = -2 + (float)xMin*0.35f;
-	float zo = -1.1 + (float)zMin*0.35f;
+
+	/*for (int i = 0; i < 100; ++i)
+	{
+		bool busy(true);
+		while (busy)
+		{
+			Vector3 newPos = rand();
+			busy = false;
+			for (auto& obj : mFlats)
+			{
+				if ((newPos - obj->GetPosition()).Length() < 50)
+				{
+					busy = true;
+					break;
+				}
+			}
+		}
+	}*/
+
+
+
 	for (int i = 0; i < 100; i++) 
 	{
 		float rY = GetRandom(0.2f, 0.3f);
 		mFlats[i]->GetScale() = Vector3(0.1f, rY , 0.1f);
 		float mFlatX = -0.5;
 		float mFlatZ = -0.5;
-		while ((mFlatX < 0 && mFlatX > -2) && (mFlatZ < 0 && mFlatZ > -2)) 
+		while ((mFlatX < 0 && mFlatX > -2) && (mFlatZ < 0 && mFlatZ > -2))
 		{
-			mFlatX = GetRandom(xMin, xMax);
-			mFlatZ = GetRandom(zMin, zMax);
+			//if (i = 0)
+			//{
+				mFlatX = GetRandom(xMin, xMax);
+				mFlatZ = GetRandom(zMin, zMax);
+			//}
+			//else if (i >= 1 && (mFlatX != mFlats[i - 1]->GetPosition().x && mFlatZ != mFlats[i - 1]->GetPosition().z))
+			//{
+				//mFlatX = GetRandom(xMin, xMax);
+				//mFlatZ = GetRandom(zMin, zMax);
+			//}
 		}
 		mFlats[i]->GetPosition() = AvoidQuad(rY, xMin + 0.1f, xMax - 0.1f, zMin + 0.1f, zMax - 0.1f, minXAvoid -.5f, maxXAvoid + .5f, minZAvoid -.5f , maxZAvoid + .5f);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
