@@ -7,36 +7,37 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 /*
 */
-Vector3 AvoidQuad(float y, Vector4 generalQuad, Vector4 avoidQuad, Vector2 previousLocation)
+Vector3 AvoidQuad(float y, const Vector4 generalQuad, const Vector4 avoidQuad, const Vector2 previousLocation)
 {
-	float& minX = generalQuad.x; //the minimum value for X in the TOTAL map quad
-	float& maxX = generalQuad.y; //the maximum value for X in the TOTAL map quad
-	float& minZ = generalQuad.z; //the minimum value for Z in the TOTAL map quad
-	float& maxZ = generalQuad.w; //the maximum value for Z in the TOTAL map quad
-	float& minXAvoid = avoidQuad.x; //minimum value for X in the AVOIDED quad
-	float& maxXAvoid = avoidQuad.y; //maximum value for X in the AVOIDED quad
-	float& minZAvoid = avoidQuad.z; //minimum value for Z in the AVOIDED quad
-	float& maxZAvoid = avoidQuad.w; //maximum value for Z in the AVOIDED quad
-	float& previousX = previousLocation.x; //X value for previous object's location
-	float& previousZ = previousLocation.y; //Z value for previous object's location
-	float& returnX = generalQuad.w; //Return X value initially set within generalQuad
-	float& returnZ = generalQuad.y; //Return Z value initially set within generalQuad
+	const float& minX = generalQuad.x; //the minimum value for X in the TOTAL map quad
+	const float& maxX = generalQuad.y; //the maximum value for X in the TOTAL map quad
+	const float& minZ = generalQuad.z; //the minimum value for Z in the TOTAL map quad
+	const float& maxZ = generalQuad.w; //the maximum value for Z in the TOTAL map quad
+	const float& minXAvoid = avoidQuad.x; //minimum value for X in the AVOIDED quad
+	const float& maxXAvoid = avoidQuad.y; //maximum value for X in the AVOIDED quad
+	const float& minZAvoid = avoidQuad.z; //minimum value for Z in the AVOIDED quad
+	const float& maxZAvoid = avoidQuad.w; //maximum value for Z in the AVOIDED quad
+	const float& previousX = previousLocation.x; //X value for previous object's location
+	const float& previousZ = previousLocation.y; //Z value for previous object's location
+	float returnX = generalQuad.w; //Return X value initially set within generalQuad
+	float returnZ = generalQuad.y; //Return Z value initially set within generalQuad
 	float xDifference = 0.f; //Difference between returnX and previousX
 	float zDifference = 0.f; //Difference between returnZ and previousZ
-	float xMaxDifference = 1; //Minimum X distance from previous location
-	float zMaxDifference = 1; //Minimum Z distance from previous location
-	while (((returnX < maxXAvoid && returnX > minXAvoid) && (returnZ < maxZAvoid && returnZ > minZAvoid)) || (((xDifference < xMaxDifference) && (xDifference > -xMaxDifference)) && ((zDifference < zMaxDifference) && (zDifference > -zMaxDifference))))
+	const float xMaxDifference = 1; //Minimum X distance from previous location
+	const float zMaxDifference = 1; //Minimum Z distance from previous location
+	while ((((returnX > minXAvoid) && (returnX < maxXAvoid)) && ((returnZ > minZAvoid) && (returnZ < maxZAvoid))) || (((xDifference > -xMaxDifference) && (xDifference < xMaxDifference)) && ((zDifference > -zMaxDifference) && (zDifference < zMaxDifference))))
 	{
-		//
+		//Loop runs when any of these are true:
+		//Point is inside avoidedQuad
+			//(returnX is inside of avoidQuad)
+			//(returnZ is inside of avoidQuad)
+		//Point is not within minimum distance from previous
+			//(xDifference is more than 0.1) AND
+			//(xDifference is less than -0.1)
+			//(zDifference is more than 0.1)
+			//(zDifference is less than -0.1)
 
-		//while (point is within avoidQuad) OR (point is within 0.1 radius of previous)
 
-		//Above while conditions in more detail
-		//(returnX is within avoidQuad) AND (returnZ is within avoidQuad)
-		//OR
-		//(xDifference is less than 0.1) AND (xDifference is more than -0.1)
-		//AND
-		//(zDifference is less than 0.1) AND (zDifference is more than -0.1)
 		returnX = GetRandom(minX, maxX);
 		xDifference = returnX - previousX;
 		returnZ = GetRandom(minZ, maxZ);
@@ -91,7 +92,7 @@ void Game::Initialise()
 	mCube = new Model_Kami();
 	mCube->Initialise(BuildCube(mMeshMgr));
 	mCube->GetScale() = Vector3(0.25f, 0.5f, 0.25f);
-	mCube->GetPosition() = Vector3(0.f, 0.5f, -1.5f);
+	mCube->GetPosition() = Vector3(-1.f, 0.5f, 1.f);
 	mat = mCube->GetMesh().GetSubMesh(0).material;
 	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
 	mat.texture = "building1.dds"; //text label for debugging
@@ -114,14 +115,14 @@ void Game::Initialise()
 		temp->SetOverrideMat(&mat);
 		mFlats.push_back(temp);
 	}
-	float xMin = -3;
-	float xMax = 3;
-	float zMin = -3;
-	float zMax = 3;
-	float minXAvoid = -1.5;
-	float maxXAvoid = 0.5;
-	float minZAvoid = -1.5;
-	float maxZAvoid = 0.5;
+	const float xMin = -3;
+	const float xMax = 3;
+	const float zMin = -3;
+	const float zMax = 3;
+	const float minXAvoid = -1.5;
+	const float maxXAvoid = 0.5;
+	const float minZAvoid = -1.5;
+	const float maxZAvoid = 0.5;
 
 	/*for (int i = 0; i < 100; ++i)
 	{
