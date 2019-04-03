@@ -141,27 +141,27 @@ void Game::Initialise()
 
 
 
-		Vector4 avoidedQuad = Vector4(minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
-		Vector4 generalQuad = Vector4(xMin, xMax, zMin, zMax);
-		Vector2 previousPosition;
-	for (int i = 0; i < 100; i++) 
+	Vector4 avoidedQuad = Vector4(minXAvoid, maxXAvoid, minZAvoid, maxZAvoid);
+	Vector4 generalQuad = Vector4(xMin, xMax, zMin, zMax);
+	Vector2 previousPosition;
+	for (int i = 0; i < 100; i++)
 	{
 		float rY = GetRandom(0.2f, 0.3f);
-		mFlats[i]->GetScale() = Vector3(0.1f, rY , 0.1f);
+		mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
 		float mFlatX = -0.5;
 		float mFlatZ = -0.5;
 		float xDifference = 0;
 		float xMinDifference = 0.1;
 		float zDifference = 0;
 		float zMinDifference = 0.1;
-			if (i = 0)
-			{
-				previousPosition = Vector2(0, 0);
-			}
-			else
-			{
-				previousPosition = Vector2(mFlats[i - 1]->GetPosition().x, mFlats[i - 1]->GetPosition().y);
-			}
+		if (i == 0)
+		{
+			previousPosition = Vector2(0, 0);
+		}
+		else
+		{
+			previousPosition = Vector2(mFlats[i - 1]->GetPosition().x, mFlats[i - 1]->GetPosition().y);
+		}
 		mFlats[i]->GetPosition() = AvoidQuad(rY, generalQuad, avoidedQuad, previousPosition);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
 		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
@@ -180,67 +180,8 @@ void Game::Initialise()
 			break;
 		}
 		mCube->SetOverrideMat(&mat);
-		}
-
-		//*/
-	//ELLIOT block of flats
-	/*
-		mFlats.clear();
-		//mFlats.insert(mFlats.begin(), 100, mCube);
-
-		for (size_t i = 0; i < 100; i++)
-		{
-			// Todo - Clear this later on
-			auto temp = new Model_Kami();
-			temp->Initialise(mMeshMgr.GetMesh("box"));
-			temp->SetOverrideMat(&mat);
-			mFlats.push_back(temp);
-		}
-
-
-		int w = (int)sqrt(mFlats.size());
-
-
-
-
-		for (int x = 0; x < w; ++x)
-		{
-			for (int y = 0; y < w; ++y)
-
-			{
-				//mFlats
-				float xo = -2 + (float)x*0.35f;
-				float zo = -1.1 + (float)y*0.35f;
-				float rY = GetRandom(0.2f, 0.3f);
-
-				mFlats[y * w + x]->GetScale() = Vector3(0.1f, rY, 0.1f);
-				mFlats[y * w + x]->GetPosition() = Vector3(xo, rY, zo);
-				//mFlats[y * w + x].GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
-
-				int choice = GetRandom(0, 4);
-				switch (choice)
-				{
-				case 0:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-					break;
-				case 1:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-					break;
-				case2:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
-					break;
-				case3:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
-					break;
-				}
-
-				mCube->SetOverrideMat(&mat);
-			}
-		}
-		*/
-		FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
-
 	}
+	FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 }
 
 void Game::Release()
