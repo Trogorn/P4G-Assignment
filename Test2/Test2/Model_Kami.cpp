@@ -6,10 +6,11 @@ using namespace DirectX::SimpleMath;
 
 void Model_Kami::Initialise(Mesh &mesh)
 {
-	mpMesh = &mesh;
+	mpMesh = &mesh;			     
 	mPosition = Vector3(0, 0, 0);
-	mScale = Vector3(1, 1, 1);
-	mRotation = Vector3(0, 0, 0);
+	mScale = Vector3(1, 1, 1);   
+	mRotation = Vector3(0, 0, 0); 
+	ColiderUpdate();
 }
 
 void Model_Kami::GetWorldMatrix(DirectX::SimpleMath::Matrix& w)

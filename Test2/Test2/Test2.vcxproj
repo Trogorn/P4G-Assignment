@@ -103,12 +103,14 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GeometryBuilder.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model_Kami.cpp" />
     <ClCompile Include="Repair.cpp" />
     <ClCompile Include="ShaderTypes.cpp" />
     <ClCompile Include="Shootable.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="WindowUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -120,11 +122,13 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GeometryBuilder.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model_Kami.h" />
     <ClInclude Include="Repair.h" />
     <ClInclude Include="ShaderTypes.h" />
     <ClInclude Include="Shootable.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="WindowUtils.h" />
   </ItemGroup>
   <ItemGroup>

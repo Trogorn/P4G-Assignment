@@ -7,6 +7,8 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 /*
 */
+#
+Matrix gViewMat1, gViewMat2;
 Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) {
 	/*AvoidQuad parameters explained
 float y: the actual Y value at which you want to spawn
@@ -40,6 +42,12 @@ void Game::OnResize(int screenWidth, int screenHeight)
 
 void Game::Initialise()
 {
+	
+	
+	mCamera.Initialise(Vector3(0, 1, 0), Vector3(0, 0, 1), gViewMat1);
+	mCamera.Funcy(mFlats);
+	mMKInput.Initialise(GetMainWnd(), false, true);
+	mCamera.LockMovementAxis(Turret::UNLOCK, -9.5f, Turret::UNLOCK);
 	mFX.Init(gd3dDevice);
 	//Rob floor
 	///*
@@ -204,24 +212,37 @@ void Game::Release()
 	mFX.Release();
 	mMeshMgr.Release();
 }
-
+float x;
 void Game::Update(float dTime)
 {
-
+	
+	x += dTime;
+	Vector2 m = mMKInput.GetMouseMoveAndCentre();
+	if (m.x != 0 || m.y != 0)
+		mCamera.Rotate(dTime, m.x, m.y, 0);
+	//if(mCamera.Shoot()!=nullptr)
+		//mCamera.Shoot()->Die();
+	mCamera.SetPosition(Vector3(0, x, 0));
+	
+	
 }
 
 void Game::Render(float dTime)
 {
 	BeginRender(Colours::Black);
 
-	FX::SetPerFrameConsts(gd3dImmediateContext, mCamPos);
+	int sw, sh;
+	GetClientExtents(sw, sh);
+	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 1, 1000.f);
+	//////
 
-	CreateViewMatrix(FX::GetViewMatrix(), mCamPos, Vector3(0, 0, 0), Vector3(0, 1, 0));
-	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, GetAspectRatio(), 1, 1000.f);
+	FX::GetViewMatrix() = gViewMat1;
+	SetViewportDimensions(gd3dImmediateContext, 0, 0, sw, sh / 2, gScreenViewport);
+	FX::SetPerFrameConsts(gd3dImmediateContext, mCamera.GetPos());
 
 	float alpha = 0.5f + sinf(gAngle * 2)*0.5f;
 
-	//point light
+	//point light 
 	//mLight.GetPosition() = Vector3(-2 + alpha * 4, 0.5, 1);
 	//mLight.GetRotation() = Vector3(1, 0, 0);
 	//Vector3 plightColour = Vector3(alpha, 0.7f, 0.7f);
@@ -232,11 +253,15 @@ void Game::Render(float dTime)
 	//floor
 	mFX.Render(*mQuad1, gd3dImmediateContext);
 	mFX.Render(*mQuad2, gd3dImmediateContext);
-	mFX.Render(*mCube, gd3dImmediateContext); // Skyscraper
+	//mFX.Render(*mCube, gd3dImmediateContext); // Skyscraper
 	for (int i = 0; i < (int)mFlats.size(); ++i) //Flats
-		mFX.Render(*mFlats[i], gd3dImmediateContext);
+	{
+		if(mFlats[i]->RetAlive())
+			mFX.Render(*mFlats[i], gd3dImmediateContext);
+		mFlats[i]->ColiderUpdate();
+	}
 
-
+	
 	EndRender();
 }
 
@@ -250,33 +275,17 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 	case WM_CHAR:
 		switch (wParam)
 		{
-		case 27:
-		case 'q':
-		case 'Q':
-			PostQuitMessage(0);
-			return 0;
-		case 'w':
-			mCamPos.y += camInc;
-			break;
-		case 's':
-			mCamPos.y -= camInc;
-			break;
-		case 'a':
-			mCamPos.x -= camInc;
-			break;
-		case 'd':
-			mCamPos.x += camInc;
-			break;
+
+
 		case 'z':
-			mCamPos.z += camInc;
-			break;
-		case 'x':
-			mCamPos.z -= camInc;
-			break;
-		case ' ':
-			mCamPos = mDefCamPos;
+			if(mCamera.Shoot()!=nullptr)
+				mCamera.Shoot()->Die();
+			break; 
+		case 'm':
+			
 			break;
 		}
+	
 	}
 	//default message handling (resize window, full screen, etc)
 	return DefaultMssgHandler(hwnd, msg, wParam, lParam);

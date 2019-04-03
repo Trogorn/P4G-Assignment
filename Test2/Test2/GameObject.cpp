@@ -19,6 +19,10 @@ void GameObject::Render(FX::MyFX fx)
 	//fx.Render(*mModel, gd3dImmediateContext);
 }
 
+void GameObject::Move()
+{
+	
+}
 //Vector3 GameObject::GetPosition()
 //{
 //	return mModel->GetPosition();

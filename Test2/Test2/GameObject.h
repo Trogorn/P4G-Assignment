@@ -16,7 +16,7 @@ class GameObject
 public:
 	GameObject();
 	void Initialise(Model* mModel);
-
+	virtual void Move();
 	virtual void Render(FX::MyFX fx);
 	virtual void Update(float dTime) = 0;
 	virtual void OnCollide(const GameObject* apOther) = 0;
@@ -36,6 +36,7 @@ protected:
 private:
 	Model* mModel;
 	//BoundingBox Collider
+	DirectX::BoundingBox box;
 
 };
 

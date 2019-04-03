@@ -7,7 +7,17 @@
 #include "GeometryBuilder.h"
 #include "FX.h"
 #include "Model_Kami.h"
- 
+#include "Turret.h"
+
+#include <vector>
+#include <future>
+
+#include "FX.h"
+#include "SpriteFont.h"
+#include "Input.h"
+
+
+
 
 class Game
 {
@@ -30,6 +40,9 @@ public:
 	std::vector<Model_Kami*> mFlats;
 	FX::MyFX mFX;
 
+
+
+
 private:
 	Game& operator=(const Game&) = delete;
 	Game(const Game& m) = delete;
@@ -37,6 +50,12 @@ private:
 	float gAngle = 0;
 
 	DirectX::SimpleMath::Vector3 mLightPos;
+	
+	MouseAndKeys mMKInput;
+	Gamepads mGamepad;
+	Turret mCamera;
+
+
 };
 
 #endif

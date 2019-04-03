@@ -18,11 +18,30 @@ public:
 	DirectX::SimpleMath::Vector3& GetScale() { return mScale; }
 	DirectX::SimpleMath::Vector3& GetRotation() { return mRotation; }
 	void GetWorldMatrix(DirectX::SimpleMath::Matrix& w);
+	
+	DirectX::BoundingOrientedBox& GetColider()
+	{
+		return colider;
+	}
+	void ColiderUpdate()
+	{
+		colider = DirectX::BoundingOrientedBox(mPosition, DirectX::XMFLOAT3(mScale.x, mScale.y, mScale.z), DirectX::XMFLOAT4(0, 0, mRotation.z,1.f));
+	}
+
+	void Die()
+	{
+		alive = false;
+	}
 
 	Mesh& GetMesh() 
 	{
 		assert(mpMesh);
 		return *mpMesh;
+	}
+
+	bool RetAlive()
+	{
+		return alive;
 	}
 	MaterialExt* HasOverrideMat() {
 		if (mUseOverrideMat)
@@ -48,11 +67,12 @@ public:
 		return *this;
 	}
 private:
-
+	bool alive = true;
 	Mesh *mpMesh = nullptr;
 	DirectX::SimpleMath::Vector3 mPosition, mScale, mRotation;
 	MaterialExt mOverrideMaterial;
 	bool mUseOverrideMat = false;
+	DirectX::BoundingOrientedBox colider;
 };
 
 #endif
