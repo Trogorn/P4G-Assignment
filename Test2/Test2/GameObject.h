@@ -2,11 +2,11 @@
 
 #include "d3d.h"
 
-#include "Model.h"
+#include "Model_Kami.h"
 #include "Mesh.h"
 #include "FX.h"
 
-class Model;
+class Model_Kami;
 
 using namespace DirectX::SimpleMath;
 
@@ -15,7 +15,7 @@ class GameObject
 {
 public:
 	GameObject();
-	void Initialise(Model* mModel);
+	void Initialise(Model_Kami* mModel);
 
 	virtual void Render(FX::MyFX fx);
 	virtual void Update(float dTime) = 0;
@@ -34,7 +34,7 @@ protected:
 	Vector3 forward;
 
 private:
-	Model* mModel;
+	Model_Kami* mModel;
 	//BoundingBox Collider
 
 };

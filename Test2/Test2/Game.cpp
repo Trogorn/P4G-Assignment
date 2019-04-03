@@ -19,13 +19,14 @@ while loop keeps generating X and Z values until the point is not within the avo
 
 The vector 3 returned has float y parameter and an X and Z value outside the avoided quad
 */
-	
+	// This needs to know the previous Vector3 and include a check to avoid this Vector
 	float returnX = minXAvoid;
 	float returnZ = minZAvoid;
 	while ((returnX <= maxXAvoid && returnX >= minXAvoid) && (returnZ <= maxZAvoid && returnZ >= minZAvoid)) {
 		returnX = GetRandom(minX, maxX);
 		returnZ = GetRandom(minZ, maxZ);
 	}
+
 	return Vector3(returnX, y, returnZ);
 }
 
