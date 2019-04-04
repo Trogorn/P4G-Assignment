@@ -87,7 +87,7 @@ void PlayerCar::UpdateCamera(float dTime)
 	Vector3 OffsetW = Vector3::Transform(OffsetL, L2W);
 
 	//Lerp Camera in world space
-	//camera.LerpCamera(OffsetW, dTime);
+	camera.LerpCamera(OffsetW, dTime);
 
 	//Convert cameraPos to local space
 	Vector3 cameraPosL = Vector3::Transform(*camera.GetCameraPosition(), W2L);
@@ -95,33 +95,32 @@ void PlayerCar::UpdateCamera(float dTime)
 	//Vector from Offset(Local) -> CameraPos(Local)
 	Vector3 Offset2Camera = cameraPosL - OffsetL;
 
-	cameraPosL = OffsetL;
-
-	//Thinking about this wrong need to go over it again
 
 	// Check distance X (local)
-	//if (Offset2Camera.x > CameraDistance.x)
-	//{
-	//	cameraPosL.x = CameraDistance.x;
-	//}
-	//else
-	//	if (Offset2Camera.x < -CameraDistance.x)
-	//	{
-	//		cameraPosL.x = -CameraDistance.x;
-	//	}
+	if (Offset2Camera.x > CameraDistance.x)
+	{
+		cameraPosL.x = OffsetL.x + CameraDistance.x;
+	}
+	else
+	{
+		if (Offset2Camera.x < -CameraDistance.x)
+		{
+			cameraPosL.x = OffsetL.x + -CameraDistance.x;
+		}
+	}
 
-
-
-	//// Check distance Z (local)
-	//if (Offset2Camera.z > CameraDistance.y)
-	//{
-	//	cameraPosL.z = CameraDistance.y;
-	//}
-	//else
-	//	if (-Offset2Camera.z < -CameraDistance.y)
-	//	{
-	//		cameraPosL.z = -CameraDistance.y;
-	//	}
+	// Check distance Z (local)
+	if (Offset2Camera.z > CameraDistance.y)
+	{
+		cameraPosL.z = OffsetL.z + CameraDistance.y;
+	}
+	else
+	{
+		if (Offset2Camera.z < -CameraDistance.y)
+		{
+			cameraPosL.z = OffsetL.z + -CameraDistance.y;
+		}
+	}
 
 	MyDebug::Message(std::to_string(Offset2Camera.z));
 	MyDebug::Message(std::to_string(CameraDistance.y));
