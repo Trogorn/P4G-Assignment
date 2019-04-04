@@ -121,7 +121,7 @@ void Game::Initialise()
 	const float zMax = 12;
 	const float minXAvoid = -2;
 	const float maxXAvoid = 0.5;
-	const float minZAvoid = -5;
+	const float minZAvoid = -15;
 	const float maxZAvoid = 15;
 
 	/*for (int i = 0; i < 100; ++i)
@@ -163,7 +163,7 @@ void Game::Initialise()
 		}
 		else
 		{
-			previousPosition = Vector2(mFlats[i - 1]->GetPosition().x, mFlats[i - 1]->GetPosition().y);
+			previousPosition = Vector2(mFlats[i - 1]->GetPosition().x, mFlats[i - 1]->GetPosition().z);
 		}
 		mFlats[i]->GetPosition() = AvoidQuad(rY, generalQuad, avoidedQuad, previousPosition);
 		mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
