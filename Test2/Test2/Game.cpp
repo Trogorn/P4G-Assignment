@@ -366,6 +366,8 @@ void Game::Render(float dTime)
 	SetViewportDimensions(gd3dImmediateContext, 0, 0, sw, sh / 2, gScreenViewport);
 	FX::SetPerFrameConsts(gd3dImmediateContext, mCamera.GetPos());
 
+
+
 	float alpha = 0.5f + sinf(gAngle * 2)*0.5f;
 
 	//point light 

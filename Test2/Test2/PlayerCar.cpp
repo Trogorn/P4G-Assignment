@@ -149,4 +149,5 @@ void PlayerCar::Render(FX::MyFX* fx)
 {
 	GameObject::Render(fx);
 	camera.Render(fx, *GetPosition());
+	GameObject::Render(fx);
 }
