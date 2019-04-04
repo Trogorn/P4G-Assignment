@@ -147,7 +147,14 @@ void Car::UpdateGameObject(float dTime)
 
 	// Rotate 'car' by this amount
 	// Rotate car by turn
-	GetRotation()->y += turn;
+	//Car shouldn't be able to turn on the spot now
+	// Maybe link the more to speed like
+	// += turn / speed?
+	// and if speed < x turn doesn't work?
+	if (speed != 0)
+	{
+		GetRotation()->y += turn;
+	}
 
 	// Move 'car' 'forward'
 	*GetPosition() = Vector3::Transform(speed * Vector3::UnitZ, GetWorldMatrix());

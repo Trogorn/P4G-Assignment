@@ -60,6 +60,10 @@ void PlayerCar::UpdateControlVector()
 				controlVector.x = 0;
 		}
 	}
+	if (MKInput->IsPressed(VK_SPACE))
+	{
+		speed = 0;
+	}
 
 }
 
