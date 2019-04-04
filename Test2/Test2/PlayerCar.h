@@ -22,13 +22,15 @@ public:
 
 	void Render(FX::MyFX* fx);
 
+	Camera* GetCamera() { return &camera; }
+
 private:
 	//Camera Offset unit Vector
 	Vector3 CameraOffSetV;
 	//Length of Camera Offset Vector
 	float CameraOffSetD;
 	//Allowed distance from offset
-	Vector2 CameraDistance;
+	Vector3 CameraDistance;
 
 	//Turret turret;
 	MouseAndKeys* MKInput;

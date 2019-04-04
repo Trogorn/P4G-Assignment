@@ -226,62 +226,7 @@ void Game::Initialise()
 		}
 		mCube->SetOverrideMat(&mat);
 
-		//*/
-	//ELLIOT block of flats
-	/*
-		mFlats.clear();
-		//mFlats.insert(mFlats.begin(), 100, mCube);
 
-		for (size_t i = 0; i < 100; i++)
-		{
-			// Todo - Clear this later on
-			auto temp = new Model_Kami();
-			temp->Initialise(mMeshMgr.GetMesh("box"));
-			temp->SetOverrideMat(&mat);
-			mFlats.push_back(temp);
-		}
-
-
-		int w = (int)sqrt(mFlats.size());
-
-
-
-
-		for (int x = 0; x < w; ++x)
-		{
-			for (int y = 0; y < w; ++y)
-
-			{
-				//mFlats
-				float xo = -2 + (float)x*0.35f;
-				float zo = -1.1 + (float)y*0.35f;
-				float rY = GetRandom(0.2f, 0.3f);
-
-				mFlats[y * w + x]->GetScale() = Vector3(0.1f, rY, 0.1f);
-				mFlats[y * w + x]->GetPosition() = Vector3(xo, rY, zo);
-				//mFlats[y * w + x].GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
-
-				int choice = GetRandom(0, 4);
-				switch (choice)
-				{
-				case 0:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-					break;
-				case 1:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-					break;
-				case2:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
-					break;
-				case3:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
-					break;
-				}
-
-				mCube->SetOverrideMat(&mat);
-			}
-		}
-		*/
 		FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 
 	}
@@ -368,8 +313,6 @@ void Game::Render(float dTime)
 	SetViewportDimensions(gd3dImmediateContext, 0, 0, sw, sh / 2, gScreenViewport);
 	FX::SetPerFrameConsts(gd3dImmediateContext, mCamera.GetPos());
 
-
-
 	float alpha = 0.5f + sinf(gAngle * 2)*0.5f;
 
 	//point light 
@@ -408,16 +351,25 @@ void Game::Render(float dTime)
 	//End Sprite Batch
 	
 	mpSpriteBatch->End();
+
 	player.Render(&mFX);
+
+	player.GetCamera()->Render(&mFX, *player.GetPosition());
+
+	//This seems to not care if something is infront of whats being rendered?
 	mFX.Render(*mQuad1, gd3dImmediateContext);
+
 	mFX.Render(*mQuad2, gd3dImmediateContext);
 	//mFX.Render(*mCube, gd3dImmediateContext); // Skyscraper
+
 	for (int i = 0; i < (int)mFlats.size(); ++i) //Flats
 	{
 		if (mFlats[i]->RetAlive())
 			mFX.Render(*mFlats[i], gd3dImmediateContext);
 		mFlats[i]->ColiderUpdate();
 	}
+
+	player.Render(&mFX);
 
 	
 

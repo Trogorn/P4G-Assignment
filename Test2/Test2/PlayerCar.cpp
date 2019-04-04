@@ -6,6 +6,7 @@ PlayerCar::PlayerCar() :Car()
 	camera.Initialise(103, this);
 }
 
+//Some things don't work with the scale needs to be fixed
 void PlayerCar::Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed, Turret* turret)
 {
 	this->turret = turret;
@@ -15,7 +16,7 @@ void PlayerCar::Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami*
 
 	CameraOffSetV = Vector3(0.f, 1.f, -2.f);
 	CameraOffSetD = 2.f;
-	CameraDistance = Vector2(3.f, 4.f);
+	CameraDistance = Vector3(3.f, 4.f, 0.f);
 }
 
 
@@ -68,6 +69,8 @@ void PlayerCar::UpdateControlVector()
 
 }
 
+//This breaks if the car reverses past the camera
+// Look into this
 void PlayerCar::UpdateCamera(float dTime)
 {
 	//Model has a world matrix meaning I can work with local space and then convert it into world coordinates later
@@ -84,7 +87,7 @@ void PlayerCar::UpdateCamera(float dTime)
 	Vector3 OffsetW = Vector3::Transform(OffsetL, L2W);
 
 	//Lerp Camera in world space
-	camera.LerpCamera(OffsetW, dTime);
+	//camera.LerpCamera(OffsetW, dTime);
 
 	//Convert cameraPos to local space
 	Vector3 cameraPosL = Vector3::Transform(*camera.GetCameraPosition(), W2L);
@@ -92,32 +95,46 @@ void PlayerCar::UpdateCamera(float dTime)
 	//Vector from Offset(Local) -> CameraPos(Local)
 	Vector3 Offset2Camera = cameraPosL - OffsetL;
 
+	cameraPosL = OffsetL;
+
+	//Thinking about this wrong need to go over it again
 
 	// Check distance X (local)
-	if (Offset2Camera.x > CameraDistance.x)
-	{
-		cameraPosL.x = CameraDistance.x;
-	}
-	else
-		if (Offset2Camera.x < -CameraDistance.x)
-		{
-			cameraPosL.x = -CameraDistance.x;
-		}
+	//if (Offset2Camera.x > CameraDistance.x)
+	//{
+	//	cameraPosL.x = CameraDistance.x;
+	//}
+	//else
+	//	if (Offset2Camera.x < -CameraDistance.x)
+	//	{
+	//		cameraPosL.x = -CameraDistance.x;
+	//	}
 
-	// Check distance Z (local)
-	if (Offset2Camera.z > CameraDistance.y)
-	{
-		cameraPosL.z = CameraDistance.y;
-	}
-	else
-		if (-Offset2Camera.z < -CameraDistance.y)
-		{
-			cameraPosL.z = -CameraDistance.y;
-		}
+
+
+	//// Check distance Z (local)
+	//if (Offset2Camera.z > CameraDistance.y)
+	//{
+	//	cameraPosL.z = CameraDistance.y;
+	//}
+	//else
+	//	if (-Offset2Camera.z < -CameraDistance.y)
+	//	{
+	//		cameraPosL.z = -CameraDistance.y;
+	//	}
+
+	MyDebug::Message(std::to_string(Offset2Camera.z));
+	MyDebug::Message(std::to_string(CameraDistance.y));
+	MyDebug::Message(std::to_string(cameraPosL.z));
+
 
 	//Convert Back to world coordinates and send to the Camera
 	*camera.GetCameraPosition() = Vector3::Transform(cameraPosL, L2W);
-	turret->SetPosition(*GetPosition()+ Vector3(0,0.15f,0));
+
+
+	//turret->SetPosition( Vector3::Transform(Vector3(0,0.25f,0), GetWorldMatrix()) );
+
+	turret->SetPosition(Vector3(0, 0.15f, 0) + *GetPosition());
 }
 
 void PlayerCar::Debug()
@@ -150,6 +167,5 @@ void PlayerCar::Debug()
 void PlayerCar::Render(FX::MyFX* fx)
 {
 	GameObject::Render(fx);
-	camera.Render(fx, *GetPosition());
-	GameObject::Render(fx);
+	//camera.Render(fx, *GetPosition());
 }
