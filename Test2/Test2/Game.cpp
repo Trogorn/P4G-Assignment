@@ -10,17 +10,18 @@ using namespace DirectX::SimpleMath;
 
 Matrix gViewMat1, gViewMat2;
 Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid) {
-	/*AvoidQuad parameters explained
-float y: the actual Y value at which you want to spawn
-float minX, maxX: the minimum and maximum value for X in the TOTAL map quad
-float minZ, maxZ:  the minimum and maximum value for Z in the TOTAL map quad
-float minXAvoid, maxXAvoid: the minimum and maximum value for X in the AVOIDED quad
-float minZAvoid, maxZAvoid:  the minimum and maximum value for Z in the AVOIDED quad
+	/*
+	AvoidQuad parameters explained
+	float y: the actual Y value at which you want to spawn
+	float minX, maxX: the minimum and maximum value for X in the TOTAL map quad
+	float minZ, maxZ:  the minimum and maximum value for Z in the TOTAL map quad
+	float minXAvoid, maxXAvoid: the minimum and maximum value for X in the AVOIDED quad
+	float minZAvoid, maxZAvoid:  the minimum and maximum value for Z in the AVOIDED quad
 
-while loop keeps generating X and Z values until the point is not within the avoided quad
+	while loop keeps generating X and Z values until the point is not within the avoided quad
 
-The vector 3 returned has float y parameter and an X and Z value outside the avoided quad
-*/
+	The vector 3 returned has float y parameter and an X and Z value outside the avoided quad
+	*/
 	
 	float returnX = minXAvoid;
 	float returnZ = minZAvoid;
@@ -45,8 +46,8 @@ void Game::Load()
 	//ANY MODEL LOADING GOES HERE NOWHERE ELSE----------------------------------------------------------------
 
 	mCar.Initialise(BuildCube(mMeshMgr));
-	*mCar.GetScale() = Vector3(1.f, 1.f, 1.f);
-	*mCar.GetPosition() = Vector3(0, 0, 0);
+	*mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
+	*mCar.GetPosition() = Vector3(0, 0.2f, 0);
 	*mCar.GetRotation() = Vector3(0, 0, 0);
 
 	mLoadData.loadedSoFar++;
@@ -118,7 +119,7 @@ void Game::Initialise()
 	mMKInput.Initialise(GetMainWnd(), false);
 	mGamepad.Initialise();
 
-	player.Initialise(&mMKInput, &mGamepad, &mCar, 90, 0.01f, 0.1f);
+	
 
 
 	
@@ -126,7 +127,7 @@ void Game::Initialise()
 	mCamera.Funcy(mFlats);
 	mMKInput.Initialise(GetMainWnd(), false, true);
 	mCamera.LockMovementAxis(Turret::UNLOCK, -9.5f, Turret::UNLOCK);
-
+	player.Initialise(&mMKInput, &mGamepad, &mCar, 90, 0.01f, 0.1f, 0.1f, 10.f, 5.f, &mCamera);
 	//Rob floor
 	///*
 	mQuad1 = new Model_Kami();
@@ -225,62 +226,7 @@ void Game::Initialise()
 		}
 		mCube->SetOverrideMat(&mat);
 
-		//*/
-	//ELLIOT block of flats
-	/*
-		mFlats.clear();
-		//mFlats.insert(mFlats.begin(), 100, mCube);
 
-		for (size_t i = 0; i < 100; i++)
-		{
-			// Todo - Clear this later on
-			auto temp = new Model_Kami();
-			temp->Initialise(mMeshMgr.GetMesh("box"));
-			temp->SetOverrideMat(&mat);
-			mFlats.push_back(temp);
-		}
-
-
-		int w = (int)sqrt(mFlats.size());
-
-
-
-
-		for (int x = 0; x < w; ++x)
-		{
-			for (int y = 0; y < w; ++y)
-
-			{
-				//mFlats
-				float xo = -2 + (float)x*0.35f;
-				float zo = -1.1 + (float)y*0.35f;
-				float rY = GetRandom(0.2f, 0.3f);
-
-				mFlats[y * w + x]->GetScale() = Vector3(0.1f, rY, 0.1f);
-				mFlats[y * w + x]->GetPosition() = Vector3(xo, rY, zo);
-				//mFlats[y * w + x].GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
-
-				int choice = GetRandom(0, 4);
-				switch (choice)
-				{
-				case 0:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-					break;
-				case 1:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-					break;
-				case2:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
-					break;
-				case3:
-					mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
-					break;
-				}
-
-				mCube->SetOverrideMat(&mat);
-			}
-		}
-		*/
 		FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
 
 	}
@@ -314,18 +260,20 @@ void Game::Update(float dTime)
 
 	mGamepad.Update();
 	
-	x += dTime;
+	//x += dTime;
 	Vector2 m = mMKInput.GetMouseMoveAndCentre();
 	if (m.x != 0 || m.y != 0)
 		mCamera.Rotate(dTime, m.x, m.y, 0);
 	//if(mCamera.Shoot()!=nullptr)
 		//mCamera.Shoot()->Die();
-	mCamera.SetPosition(Vector3(0, x, 0));
+	//mCamera.SetPosition(Vector3(0, x, 0));
 
 	player.Update(dTime);
 	//may move this to be inside Update instead of outside like it is here
 	player.UpdateCamera(dTime);
-	
+	if (mMKInput.GetMouseButton(MouseAndKeys::LBUTTON))
+		if (mCamera.Shoot() != nullptr)
+			mCamera.Shoot()->Die();
 	
 }
 
@@ -385,10 +333,11 @@ void Game::Render(float dTime)
 			mFX.Render(*mFlats[i], gd3dImmediateContext);
 		mFlats[i]->ColiderUpdate();
 	}
-
+	
 	CommonStates state(gd3dDevice);
 	//Setup Sprite Batch
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
+	mpSpriteBatch->Draw(mFX.mCache.LoadTexture("test.dds", true, gd3dDevice), Vector2(sw / 2, sh / 4), nullptr, Colours::White, 0, Vector2(0, 0), Vector2(0.01f, 0.01f));
 	wstringstream ss;
 	if (dTime > 0)
 		ss << L"FPS: " << (int)(1.f / dTime);
@@ -400,9 +349,30 @@ void Game::Render(float dTime)
 
 
 	//End Sprite Batch
+	
 	mpSpriteBatch->End();
 
 	player.Render(&mFX);
+
+	player.GetCamera()->Render(&mFX, *player.GetPosition());
+
+	//This seems to not care if something is infront of whats being rendered?
+	mFX.Render(*mQuad1, gd3dImmediateContext);
+
+	mFX.Render(*mQuad2, gd3dImmediateContext);
+	//mFX.Render(*mCube, gd3dImmediateContext); // Skyscraper
+
+	for (int i = 0; i < (int)mFlats.size(); ++i) //Flats
+	{
+		if (mFlats[i]->RetAlive())
+			mFX.Render(*mFlats[i], gd3dImmediateContext);
+		mFlats[i]->ColiderUpdate();
+	}
+
+	player.Render(&mFX);
+
+	
+
 	
 	EndRender();
 }
@@ -422,10 +392,7 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 		case 'Q':
 			PostQuitMessage(0);
 			return 0;
-		case 'z':
-			if(mCamera.Shoot()!=nullptr)
-				mCamera.Shoot()->Die();
-			break; 
+	
 		}
 	case WM_INPUT:
 		mMKInput.MessageEvent((HRAWINPUT)lParam);
