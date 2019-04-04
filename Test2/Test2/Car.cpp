@@ -5,13 +5,15 @@ Car::Car():GameObject()
 {
 }
 
-void Car::Initialise(Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float maxSpeed)
+void Car::Initialise(Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed)
 {
 	this->speed = speed;
 	this->turnSpeed = turnSpeed;
 	this->drag = drag;
 	this->acceleration = acceleration;
+	this->brakingForce = brakingForce;
 	this->maxSpeed = maxSpeed;
+	this->reverseSpeed = reverseSpeed;
 	direction = direction.UnitZ;
 	//GameObject* pGO = this;
 	//pGO->Initialise(mModel);
@@ -29,7 +31,7 @@ void Car::Update(float dTime)
 {
 	UpdateControlVector();
 	UpdateMovement(dTime);
-	UpdateGameObject();
+	UpdateGameObject(dTime);
 
 }
 
@@ -40,6 +42,7 @@ void Car::UpdateControlVector()
 	// AI cars will update this from ai calculations
 }
 
+//This function updates speed value, and turn degrees/radians
 void Car::UpdateMovement(float dTime)
 {
 
@@ -51,7 +54,36 @@ void Car::UpdateMovement(float dTime)
 	// y accel -1 = full brake/reverse  0 = coast  1 = full accel
 	// x turning -1 = full left  0 = no turn  1 = full right
 
-	speed += (controlVector.y * acceleration) * dTime;
+	//Speed should be a float indicating how fast the vehicle is moving
+
+	//If accelerating
+	if (controlVector.y > 0)
+	{
+		speed += acceleration * controlVector.y * dTime;
+	}
+	else
+	{
+		//If braking
+		if (controlVector.y < 0)
+		{
+			speed += brakingForce * controlVector.y * dTime;
+		}
+	}
+
+	//Limit max speed
+	if (speed > maxSpeed)
+	{
+		speed = maxSpeed;
+	}
+	else
+	{
+		if (speed < -reverseSpeed)
+		{
+			speed = -reverseSpeed;
+		}
+	}
+
+	//speed += (controlVector.y * acceleration) * dTime;
 	// maybe rework this to get something that feels nicer?
 
 
@@ -67,71 +99,58 @@ void Car::UpdateMovement(float dTime)
 		}
 
 
-	//TURNING------------------------------------------------------------------------------------------------------------------------
+	//Turning probably moved to updateworld object
 
-	//Alternative add a vector at 90 degrees to current then normalise?
+	////TURNING------------------------------------------------------------------------------------------------------------------------
 
-	//Convert turnspeed into rads and multiply by controlVector to get distance to rotate
-	float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime;
+	////Convert turnspeed into rads and multiply by controlVector to get distance to rotate
+	//float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime;
 
-	//Create Rotation matrix from radians
-	Matrix m = Matrix::CreateRotationY(turn);
+	////Create Rotation matrix from radians
+	//Matrix m = Matrix::CreateRotationY(turn);
 
-	//Transform direction by rotation matrix
-	direction = direction.Transform(direction, m);
+	////Transform direction by rotation matrix
+	//direction = direction.TransformNormal(direction, m);
 
-	// Make sure direction is a unit vector (Is this actually needed maybe check to see if this is needed since Normalizing is slow)
-	direction.Normalize();
+	//// If direction is not currently a unit vector, normalize it
+	//if (direction.LengthSquared() != 1)
+	//{
+	//	direction.Normalize();
+	//}
 
 }
 
-void Car::UpdateGameObject()
-{
 
+//This function updates the actual position and rotation of the model/object
+//might merge this with Update Movement
+void Car::UpdateGameObject(float dTime)
+{
 	//Update this to make sure its all local 2 World space
 
-	//Get Reference to Position Vector
-	Vector3* pPosition = GetPosition();
+	//If working with local space speed would be a vector heading straight forward
+	//The object would get rotated in world space, causing said speed vector to be rotated as well.
 
-	//Pointer
-	Vector3* pRotation = GetRotation();
+	//So each frame the order would be this
 
-	//Update Speed
-
-	//Position needs to equal direction*speed converted into world space?
-
-	if (speed > 0.01 || speed < 0.01)
-		*pPosition = Vector3::Transform(speed*direction, GetWorldMatrix());
-
-	/*if (speed != 0)
-		*pPosition += (speed * direction);*/
-
-	//Rotation
-
-	//Car wants to "look" towards the direction/ in the direction
-
-	//Calculate angle between forward and direction
-
-	//Angle calculation using determinant of the 2 vectors and (0,1,0)
-	vCross = forward.Cross(direction);
-	dot = forward.Dot(direction);
-	det = Vector3::Up.Dot(vCross);
-	rotationAngle = atan2(det, dot);
-
-	//Create matrix for later
-	Matrix m = Matrix::CreateRotationY(rotationAngle);
-	//Matrix m = Matrix::CreateLookAt(forward, *GetPosition() + direction, Vector3::UnitZ);
-
-	//rotate model by rotation
-	pRotation->y += rotationAngle;
-
-	//rotate forward vector to match
-	Vector3::TransformNormal(forward, m, forward);
-
-	forward.Normalize();
+	//Update speed
+	//Calculate change in direction?
+	//Rotate object
+	//Move object forward by speed
 
 
+	//Update Speed s above in update movement
 
+	// Next thing is to calculate turning
+
+	// So using control vector work out how many degrees/radians the 'car' has turned by?
+	float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime; //This line should work for that
+
+	// Rotate 'car' by this amount
+	// Rotate car by turn
+	GetRotation()->y += turn;
+
+	// Move 'car' 'forward'
+	*GetPosition() = Vector3::Transform(speed * Vector3::UnitZ, GetWorldMatrix());
 }
 
 //Can be used to increase or decrease health
