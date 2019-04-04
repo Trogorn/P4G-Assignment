@@ -45,7 +45,7 @@ void Game::Load()
 	//ANY MODEL LOADING GOES HERE NOWHERE ELSE----------------------------------------------------------------
 
 	mCar.Initialise(BuildCube(mMeshMgr));
-	*mCar.GetScale() = Vector3(1.f, 1.f, 1.f);
+	*mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
 	*mCar.GetPosition() = Vector3(0, 0, 0);
 	*mCar.GetRotation() = Vector3(0, 0, 0);
 
@@ -118,7 +118,7 @@ void Game::Initialise()
 	mMKInput.Initialise(GetMainWnd(), false);
 	mGamepad.Initialise();
 
-	player.Initialise(&mMKInput, &mGamepad, &mCar, 90, 0.01f, 0.1f);
+	player.Initialise(&mMKInput, &mGamepad, &mCar, 90, 0.01f, 0.1f, 0.1f, 10.f, 5.f);
 
 
 	

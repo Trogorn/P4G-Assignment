@@ -6,11 +6,11 @@ PlayerCar::PlayerCar() :Car()
 	camera.Initialise(103, this);
 }
 
-void PlayerCar::Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float turnSpeed, float drag, float acceleration)
+void PlayerCar::Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed)
 {
 	this->MKInput = MKInput;
 	this->GamePad = GamePad;
-	Car::Initialise(mModel, turnSpeed, drag, acceleration, 20);
+	Car::Initialise(mModel, turnSpeed, drag, acceleration, brakingForce, maxSpeed, reverseSpeed);
 
 	CameraOffSetV = Vector3(0.f, 1.f, -2.f);
 	CameraOffSetD = 2.f;
@@ -59,6 +59,10 @@ void PlayerCar::UpdateControlVector()
 			else
 				controlVector.x = 0;
 		}
+	}
+	if (MKInput->IsPressed(VK_SPACE))
+	{
+		speed = 0;
 	}
 
 }
