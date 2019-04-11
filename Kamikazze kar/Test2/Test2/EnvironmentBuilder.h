@@ -21,3 +21,18 @@
 #include "FX.h"
 #include "SpriteFont.h"
 
+
+class EnvironmentBuilder
+{
+
+public:
+
+	EnvironmentBuilder() {};
+	
+
+protected:
+
+private:
+
+
+};
