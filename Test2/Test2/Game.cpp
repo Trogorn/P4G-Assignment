@@ -45,10 +45,7 @@ void Game::Load()
 {
 	//ANY MODEL LOADING GOES HERE NOWHERE ELSE----------------------------------------------------------------
 
-	mCar.Initialise(BuildCube(mMeshMgr));
-	*mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
-	*mCar.GetPosition() = Vector3(0, 0.2f, 0);
-	*mCar.GetRotation() = Vector3(0, 0, 0);
+	
 
 	mLoadData.loadedSoFar++;
 
@@ -120,7 +117,10 @@ void Game::Initialise()
 	mGamepad.Initialise();
 
 	
-
+	mCar.Initialise(BuildCube(mMeshMgr));
+	*mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
+	*mCar.GetPosition() = Vector3(0, 0.2f, 0);
+	*mCar.GetRotation() = Vector3(0, 0, 0);
 
 	
 	mCamera.Initialise(Vector3(0, 1, 0), Vector3(0, 0, 1), gViewMat1);
@@ -306,7 +306,7 @@ void Game::Render(float dTime)
 	//Ask Tom about what this is
 	int sw, sh;
 	GetClientExtents(sw, sh);
-	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 1, 1000.f);
+	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 0.1f, 10.f);
 	//////
 
 	FX::GetViewMatrix() = gViewMat1;
@@ -334,23 +334,10 @@ void Game::Render(float dTime)
 		mFlats[i]->ColiderUpdate();
 	}
 	
-	CommonStates state(gd3dDevice);
-	//Setup Sprite Batch
-	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
-	mpSpriteBatch->Draw(mFX.mCache.LoadTexture("test.dds", true, gd3dDevice), Vector2(sw / 2, sh / 4), nullptr, Colours::White, 0, Vector2(0, 0), Vector2(0.01f, 0.01f));
-	wstringstream ss;
-	if (dTime > 0)
-		ss << L"FPS: " << (int)(1.f / dTime);
-	else
-		ss << L"FPS: 0";
-	player.Debug();
-	ss << MyDebug::GetDebugMessage().c_str();
-	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 0), Colours::White, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 
-	//End Sprite Batch
-	
-	mpSpriteBatch->End();
+
+	//-------camera switches here------------------------------------------
 
 	player.Render(&mFX);
 
@@ -371,6 +358,24 @@ void Game::Render(float dTime)
 
 	player.Render(&mFX);
 
+	//-- Display Camera
+	CommonStates state(gd3dDevice);
+	//Setup Sprite Batch
+	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
+	mpSpriteBatch->Draw(mFX.mCache.LoadTexture("test.dds", true, gd3dDevice), Vector2(sw / 2, sh / 4), nullptr, Colours::White, 0, Vector2(0, 0), Vector2(0.01f, 0.01f));
+	wstringstream ss;
+	if (dTime > 0)
+		ss << L"FPS: " << (int)(1.f / dTime);
+	else
+		ss << L"FPS: 0";
+	player.Debug();
+	ss << MyDebug::GetDebugMessage().c_str();
+	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 0), Colours::White, 0, Vector2(0, 0), Vector2(1.f, 1.f));
+
+
+	
+	mpSpriteBatch->End();
+	//End Sprite Batch
 	
 
 	
