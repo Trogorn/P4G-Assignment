@@ -26,8 +26,9 @@ public:
 	const DirectX::SimpleMath::Vector3 mDefCamPos = DirectX::SimpleMath::Vector3(0, 2, -5);
 	DirectX::SimpleMath::Vector3 mCamPos = DirectX::SimpleMath::Vector3(0, 2, -5);
 	MeshManager mMeshMgr;
-	Model_Kami *mQuad1, *mQuad2, *mCube, *mTent, *mQuadPyramid, *mLight;
+	Model_Kami *mQuad, *mCube, *mTent, *mQuadPyramid, *mLight;
 	std::vector<Model_Kami*> mFlats;
+	std::vector<Model_Kami*> mQuads;
 	FX::MyFX mFX;
 
 private:

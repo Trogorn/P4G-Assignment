@@ -60,32 +60,55 @@ void Game::Initialise()
 	mFX.Init(gd3dDevice);
 	//Rob floor
 	///*
-	mQuad1 = new Model_Kami();
-	mQuad2 = new Model_Kami();
+	mQuad = new Model_Kami();
 	//main floor
-	mQuad1->Initialise(BuildQuad(mMeshMgr));
-	MaterialExt mat = mQuad1->GetMesh().GetSubMesh(0).material;
+	mQuad->Initialise(BuildQuad(mMeshMgr));
+	MaterialExt mat = mQuad->GetMesh().GetSubMesh(0).material;
 	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
 	mat.pTextureRV = mFX.mCache.LoadTexture("green.dds", true, gd3dDevice);
 	mat.texture = "green.dds";
-	mQuad1->GetPosition() = Vector3(0, 0, 0);
-	mQuad1->GetRotation() = Vector3(0, 0, 0);
-	mQuad1->GetScale() = Vector3(10, 1, 10);
-	mQuad1->SetOverrideMat(&mat);
+	mQuad->GetPosition() = Vector3(0, 0, 0);
+	mQuad->GetRotation() = Vector3(0, 0, 0);
+	mQuad->GetScale() = Vector3(100, 1, 100);
+	mQuad->SetOverrideMat(&mat);
+	mQuads.push_back(mQuad);
 
-	//road (avoided floor)
-	mQuad2->Initialise(BuildQuad(mMeshMgr));
-	mat = mQuad2->GetMesh().GetSubMesh(0).material;
+	//road1 (avoided floor)
+	mQuad = new Model_Kami();
+	mQuad->Initialise(BuildQuad(mMeshMgr));
+	mat = mQuad->GetMesh().GetSubMesh(0).material;
 	mat.pTextureRV = mFX.mCache.LoadTexture("road.dds", true, gd3dDevice);
 	mat.texture = "road.dds";
-	mQuad2->GetPosition() = Vector3(-1, 0.01f, 0);
-	mQuad2->GetRotation() = Vector3(0, 0, 0);
-	mQuad2->GetScale() = Vector3(1, 1, 10);
-	mQuad2->SetOverrideMat(&mat);
-	//*/
+	mQuad->GetPosition() = Vector3(-1, 0.01f, 0);
+	mQuad->GetRotation() = Vector3(0, 0, 0);
+	mQuad->GetScale() = Vector3(1, 1, 10);
+	mQuad->SetOverrideMat(&mat);
+	mQuads.push_back(mQuad);
 
+	//road2 (avoided floor)
+	mQuad = new Model_Kami();
+	mQuad->Initialise(BuildQuad(mMeshMgr));
+	mat = mQuad->GetMesh().GetSubMesh(0).material;
+	mat.pTextureRV = mFX.mCache.LoadTexture("road.dds", true, gd3dDevice);
+	mat.texture = "road.dds";
+	mQuad->GetPosition() = Vector3(-10, 0.01f, 0);
+	mQuad->GetRotation() = Vector3(0, 0, 0);
+	mQuad->GetScale() = Vector3(1, 1, 10);
+	mQuad->SetOverrideMat(&mat);
+	mQuads.push_back(mQuad);
 
-
+	//roadCorner1 (avoided floor)
+	mQuad = new Model_Kami();
+	mQuad->Initialise(BuildQuad(mMeshMgr));
+	mat = mQuad->GetMesh().GetSubMesh(0).material;
+	mat.pTextureRV = mFX.mCache.LoadTexture("roadCorner.dds", true, gd3dDevice);
+	mat.texture = "roadCorner.dds";
+	mat.flags &= ~MaterialExt::TFlags::ALPHA_TRANSPARENCY;
+	mQuad->GetPosition() = Vector3(-10, 0.01f, 0);
+	mQuad->GetRotation() = Vector3(0, 0, 0);
+	mQuad->GetScale() = Vector3(2, 1, 2);
+	mQuad->SetOverrideMat(&mat);
+	mQuads.push_back(mQuad);
 
 
 	//Skyscraper
@@ -217,13 +240,11 @@ void Game::Render(float dTime)
 
 
 
-	//floor
-	mFX.Render(*mQuad1, gd3dImmediateContext);
-	mFX.Render(*mQuad2, gd3dImmediateContext);
 	mFX.Render(*mCube, gd3dImmediateContext); // Skyscraper
 	for (int i = 0; i < (int)mFlats.size(); ++i) //Flats
 		mFX.Render(*mFlats[i], gd3dImmediateContext);
-
+	for (int i = 0; i < (int)mQuads.size(); ++i) //Quads
+		mFX.Render(*mQuads[i], gd3dImmediateContext);
 
 	EndRender();
 }
