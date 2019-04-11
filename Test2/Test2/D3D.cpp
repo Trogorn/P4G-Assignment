@@ -16,7 +16,7 @@ ID3D11RenderTargetView* gRenderTargetView;
 ID3D11DepthStencilView* gDepthStencilView;
 D3D11_VIEWPORT gScreenViewport;
 bool gEnable4xMsaa = true;
-void(*gpOnResize)(int,int) = nullptr;
+void(*gpOnResize)(int, int) = nullptr;
 bool gWindowed = false;
 
 float GetAspectRatio()
@@ -80,10 +80,10 @@ void BindRenderTargetViewAndDepthStencilView(ID3D11DeviceContext* pd3dImmediateC
 }
 
 // Set the viewport transform.
-void SetViewportDimensions(ID3D11DeviceContext* pd3dImmediateContext, int screenWidth, int screenHeight, D3D11_VIEWPORT& screenViewport)
+void SetViewportDimensions(ID3D11DeviceContext* pd3dImmediateContext, int x, int y, int screenWidth, int screenHeight, D3D11_VIEWPORT& screenViewport)
 {
-	screenViewport.TopLeftX = 0;
-	screenViewport.TopLeftY = 0;
+	screenViewport.TopLeftX = static_cast<float>(x);
+	screenViewport.TopLeftY = static_cast<float>(y);
 	screenViewport.Width = static_cast<float>(screenWidth);
 	screenViewport.Height = static_cast<float>(screenHeight);
 	screenViewport.MinDepth = 0.0f;
@@ -130,7 +130,7 @@ void CheckMultiSamplingSupport(ID3D11Device* pd3dDevice, UINT& quality4xMsaa)
 	// 4XMSAA looks good!
 	HR(pd3dDevice->CheckMultisampleQualityLevels(
 		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &quality4xMsaa));
-	
+
 	//if zero was returned then the hardware cannot do it
 	assert(quality4xMsaa > 0);
 }
@@ -169,7 +169,7 @@ void CreateSwapChainDescription(DXGI_SWAP_CHAIN_DESC& sd, HWND hMainWnd, bool wi
 	gWindowed = windowed;
 }
 
-void CreateSwapChain(DXGI_SWAP_CHAIN_DESC& sd, ID3D11Device* pd3dDevice,IDXGISwapChain** pSwapChain)
+void CreateSwapChain(DXGI_SWAP_CHAIN_DESC& sd, ID3D11Device* pd3dDevice, IDXGISwapChain** pSwapChain)
 {
 	// To correctly create the swap chain, we must use the IDXGIFactory that was
 	// used to create the device.  If we tried to use a different IDXGIFactory instance
@@ -216,12 +216,12 @@ void OnResize_Default(int clientWidth, int clientHeight)
 
 	BindRenderTargetViewAndDepthStencilView(gd3dImmediateContext, gRenderTargetView, gDepthStencilView);
 
-	SetViewportDimensions(gd3dImmediateContext, clientWidth, clientHeight, gScreenViewport);
+	SetViewportDimensions(gd3dImmediateContext, 0, 0, clientWidth, clientHeight, gScreenViewport);
 
 }
 
 
-bool InitDirect3D(void(*pOnResize)(int,int))
+bool InitDirect3D(void(*pOnResize)(int, int))
 {
 	assert(pOnResize);
 	gpOnResize = pOnResize;
@@ -284,8 +284,8 @@ void ReleaseD3D(bool extraReporting)
 void InitInputAssembler(ID3D11InputLayout* pInputLayout, ID3D11Buffer* pVBuffer, UINT szVertex, ID3D11Buffer* pIBuffer, D3D_PRIMITIVE_TOPOLOGY topology)
 {
 	UINT offset = 0;
-	gd3dImmediateContext->IASetVertexBuffers(0, 1, &pVBuffer , &szVertex, &offset);
-	gd3dImmediateContext->IASetInputLayout(pInputLayout);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+	gd3dImmediateContext->IASetVertexBuffers(0, 1, &pVBuffer, &szVertex, &offset);
+	gd3dImmediateContext->IASetInputLayout(pInputLayout);
 	gd3dImmediateContext->IASetIndexBuffer(pIBuffer, DXGI_FORMAT_R32_UINT, 0);
 	gd3dImmediateContext->IASetPrimitiveTopology(topology);
 }
@@ -295,9 +295,21 @@ void EndRender()
 	HR(gSwapChain->Present(0, 0));
 }
 
+void ResetStatesAfterSprites()
+{
+	//using sprites disables z-testing so reset to default (on)
+	gd3dImmediateContext->OMSetDepthStencilState(nullptr, 1);
+	float bFactors[4]{ 1, 1, 1, 1 };
+	UINT sampleMask = 0xffffffff;
+	gd3dImmediateContext->OMSetBlendState(nullptr, bFactors, sampleMask);
+}
+
 void BeginRender(const DirectX::SimpleMath::Vector4& backColour)
 {
 	gd3dImmediateContext->ClearRenderTargetView(gRenderTargetView, reinterpret_cast<const float*>(&backColour));
 	gd3dImmediateContext->ClearDepthStencilView(gDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	gd3dImmediateContext->RSSetViewports(1, &gScreenViewport);
+	ResetStatesAfterSprites();
 }
+
+

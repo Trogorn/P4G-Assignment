@@ -4,6 +4,7 @@
 GameObject::GameObject()
 {
 	forward = forward.UnitZ;
+	//This second line feels redunant I'll take a look at it at some point (Lochlann)
 	forward.z = 1;
 	//Set forward vector to 0,0,1
 }
@@ -14,12 +15,19 @@ void GameObject::Initialise(Model_Kami* mModel)
 }
 
 
-void GameObject::Render(FX::MyFX fx)
+void GameObject::Render(FX::MyFX* fx)
 {
-	//fx.Render(*mModel, gd3dImmediateContext);
+	fx->Render(*mModel, gd3dImmediateContext);
 }
 
-//Vector3 GameObject::GetPosition()
-//{
-//	return mModel->GetPosition();
-//}
+void GameObject::Move()
+{
+	
+}
+
+Matrix GameObject::GetWorldMatrix()
+{
+	Matrix w;
+	mModel->GetWorldMatrix(w);
+	return w;
+}
