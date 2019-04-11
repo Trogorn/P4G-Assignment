@@ -49,11 +49,145 @@ void Game::Load()
 	//ANY MODEL LOADING GOES HERE NOWHERE ELSE----------------------------------------------------------------
 
 
+		// car setup
+	mCar.Initialise(BuildCube(mMeshMgr));
+	*mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
+	*mCar.GetPosition() = Vector3(0, 0.2f, 0);
+	*mCar.GetRotation() = Vector3(0, 0, 0);
 
 	mLoadData.loadedSoFar++;
 
+	//Load skyscraper
+	mQuad1 = new Model_Kami();
+	mQuad2 = new Model_Kami();
+	//main floor
+	mQuad1->Initialise(BuildQuad(mMeshMgr));
+	MaterialExt mat = mQuad1->GetMesh().GetSubMesh(0).material;
+	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
+	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+	mat.texture = "building1.dds";
+	*mQuad1->GetPosition() = Vector3(0, 0, 0);
+	*mQuad1->GetRotation() = Vector3(0, 0, 0);
+	*mQuad1->GetScale() = Vector3(3, 1, 3);
+	mQuad1->SetOverrideMat(&mat);
+
+	mLoadData.loadedSoFar++;
+
+	//avoided floor
+	mQuad2->Initialise(BuildQuad(mMeshMgr));
+	mat = mQuad2->GetMesh().GetSubMesh(0).material;
+	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
+	mat.texture = "building2.dds";
+	*mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
+	*mQuad2->GetRotation() = Vector3(0, 0, 0);
+	*mQuad2->GetScale() = Vector3(1, 1, 1);
+	mQuad2->SetOverrideMat(&mat);
+	
+	mLoadData.loadedSoFar++;
+
+	//Skyscraper
+	mCube = new Model_Kami();
+	mCube->Initialise(mMeshMgr.GetMesh("box"));
+	*mCube->GetScale() = Vector3(0.25f, 0.5f, 0.25f);
+	*mCube->GetPosition() = Vector3(0.0f, 0.5f, 0.5f);
+	//*/
 
 
+	mat = mCube->GetMesh().GetSubMesh(0).material;
+	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+	mat.texture = "building1.dds"; //text label for debugging
+	mCube->SetOverrideMat(&mat);
+
+	mLoadData.loadedSoFar++;
+
+	//Block of flats
+
+	SeedRandom(time(NULL));
+	mFlats.clear();
+	int w = (int)sqrt(mFlats.size());
+	//mFlats.insert(mFlats.begin(), 100, mCube);
+	for (size_t i = 0; i < 100; i++)
+	{
+		// Todo - Clear this later on
+		auto* temp = new Model_Kami();
+		temp->Initialise(mMeshMgr.GetMesh("box"));
+		temp->SetOverrideMat(&mat);
+		mFlats.push_back(temp);
+		//delete temp;
+		//temp = nullptr;
+	}
+	float xMin = -3;
+	float xMax = 3;
+	float zMin = -3;
+	float zMax = 3;
+	float minXAvoid = -2;
+	float maxXAvoid = 0;
+	float minZAvoid = -2;
+	float maxZAvoid = 0;
+
+	/*for (int i = 0; i < 100; ++i)
+	{
+		bool busy(true);
+		while (busy)
+		{
+			Vector3 newPos = rand();
+			busy = false;
+			for (auto& obj : mFlats)
+			{
+				if ((newPos - obj->GetPosition()).Length() < 50)
+				{
+					busy = true;
+					break;
+				}
+			}
+		}
+	}*/
+
+
+
+	for (int i = 0; i < 100; i++)
+	{
+		float rY = GetRandom(0.2f, 0.3f);
+		*mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
+		float mFlatX = -0.5;
+		float mFlatZ = -0.5;
+		while ((mFlatX < 0 && mFlatX > -2) && (mFlatZ < 0 && mFlatZ > -2))
+		{
+			//if (i = 0)
+			//{
+			mFlatX = GetRandom(xMin, xMax);
+			mFlatZ = GetRandom(zMin, zMax);
+			//}
+			//else if (i >= 1 && (mFlatX != mFlats[i - 1]->GetPosition().x && mFlatZ != mFlats[i - 1]->GetPosition().z))
+			//{
+				//mFlatX = GetRandom(xMin, xMax);
+				//mFlatZ = GetRandom(zMin, zMax);
+			//}
+		}
+		*mFlats[i]->GetPosition() = AvoidQuad(rY, xMin + 0.1f, xMax - 0.1f, zMin + 0.1f, zMax - 0.1f, minXAvoid - .5f, maxXAvoid + .5f, minZAvoid - .5f, maxZAvoid + .5f);
+		*mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
+		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
+		switch (GetRandom(0, 3)) {
+		case 0:
+			mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
+			break;
+		case 1:
+			mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
+			break;
+		case 2:
+			mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
+			break;
+		case 3:
+			mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
+			break;
+		}
+		mCube->SetOverrideMat(&mat);
+
+		mLoadData.loadedSoFar++;
+
+		FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
+
+	}
 
 }
 
@@ -105,12 +239,10 @@ void Game::Initialise()
 	mpFont = new SpriteFont(gd3dDevice, L"../bin/data/comicSansMS.spritefont");
 	assert(mpFont);
 
-	//pFontBatch2 = new SpriteBatch(gd3dImmediateContext);
-	//assert(pFontBatch2);
 	mpFont2 = new SpriteFont(gd3dDevice, L"../bin/data/algerian.spritefont");
 	assert(mpFont2);
 
-	mLoadData.totalToLoad = 1;
+	mLoadData.totalToLoad = 5;
 	mLoadData.loadedSoFar = 0;
 	mLoadData.running = true;
 
@@ -121,153 +253,11 @@ void Game::Initialise()
 	mMKInput.Initialise(GetMainWnd(), false);
 	mGamepad.Initialise();
 
-
-	// car setup
-	mCar.Initialise(BuildCube(mMeshMgr));
-	*mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
-	*mCar.GetPosition() = Vector3(0, 0.2f, 0);
-	*mCar.GetRotation() = Vector3(0, 0, 0);
-
 	mCamera.Initialise(Vector3(0, 1, 0), Vector3(0, 0, 1), gViewMat1);
 	mCamera.Funcy(mFlats);
 	mMKInput.Initialise(GetMainWnd(), false, true);
 	mCamera.LockMovementAxis(Turret::UNLOCK, -9.5f, Turret::UNLOCK);
 	player.Initialise(&mMKInput, &mGamepad, &mCar, 90, 0.01f, 0.1f, 0.1f, 10.f, 5.f, &mCamera);
-	//Rob floor
-	///*
-
-	//rob floor
-	mQuad1 = new Model_Kami();
-	mQuad2 = new Model_Kami();
-	//main floor
-	mQuad1->Initialise(BuildQuad(mMeshMgr));
-	MaterialExt mat = mQuad1->GetMesh().GetSubMesh(0).material;
-	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
-	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-	mat.texture = "building1.dds";
-	*mQuad1->GetPosition() = Vector3(0, 0, 0);
-	*mQuad1->GetRotation() = Vector3(0, 0, 0);
-	*mQuad1->GetScale() = Vector3(3, 1, 3);
-	mQuad1->SetOverrideMat(&mat);
-
-
-
-	//avoided floor
-	mQuad2->Initialise(BuildQuad(mMeshMgr));
-	mat = mQuad2->GetMesh().GetSubMesh(0).material;
-	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-	mat.texture = "building2.dds";
-	*mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
-	*mQuad2->GetRotation() = Vector3(0, 0, 0);
-	*mQuad2->GetScale() = Vector3(1, 1, 1);
-	mQuad2->SetOverrideMat(&mat);
-	//*/
-
-
-
-	//Skyscraper
-	mCube = new Model_Kami();
-	mCube->Initialise(mMeshMgr.GetMesh("box"));
-	*mCube->GetScale() = Vector3(0.25f, 0.5f, 0.25f);
-	*mCube->GetPosition() = Vector3(0.0f, 0.5f, 0.5f);
-	//*/
-
-
-	mat = mCube->GetMesh().GetSubMesh(0).material;
-	mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-	mat.texture = "building1.dds"; //text label for debugging
-	mCube->SetOverrideMat(&mat);
-	//Block of flats
-
-	//ROB Block of flats
-	// Move this to a function no need to have it all happen here!!!! (Lochlann)
-	///*
-	SeedRandom(time(NULL));
-	mFlats.clear();
-	int w = (int)sqrt(mFlats.size());
-	//mFlats.insert(mFlats.begin(), 100, mCube);
-	for (size_t i = 0; i < 100; i++)
-	{
-		// Todo - Clear this later on
-		auto* temp = new Model_Kami();
-		temp->Initialise(mMeshMgr.GetMesh("box"));
-		temp->SetOverrideMat(&mat);
-		mFlats.push_back(temp);
-		//delete temp;
-		//temp = nullptr;
-	}
-	float xMin = -3;
-	float xMax = 3;
-	float zMin = -3;
-	float zMax = 3;
-	float minXAvoid = -2;
-	float maxXAvoid = 0;
-	float minZAvoid = -2;
-	float maxZAvoid = 0;
-
-	/*for (int i = 0; i < 100; ++i)
-	{
-		bool busy(true);
-		while (busy)
-		{
-			Vector3 newPos = rand();
-			busy = false;
-			for (auto& obj : mFlats)
-			{
-				if ((newPos - obj->GetPosition()).Length() < 50)
-				{
-					busy = true;
-					break;
-				}
-			}
-		}
-	}*/
-
-
-
-	for (int i = 0; i < 100; i++)
-	{
-		float rY = GetRandom(0.2f, 0.3f);
-		*mFlats[i]->GetScale() = Vector3(0.1f, rY , 0.1f);
-		float mFlatX = -0.5;
-		float mFlatZ = -0.5;
-		while ((mFlatX < 0 && mFlatX > -2) && (mFlatZ < 0 && mFlatZ > -2))
-		{
-			//if (i = 0)
-			//{
-				mFlatX = GetRandom(xMin, xMax);
-				mFlatZ = GetRandom(zMin, zMax);
-			//}
-			//else if (i >= 1 && (mFlatX != mFlats[i - 1]->GetPosition().x && mFlatZ != mFlats[i - 1]->GetPosition().z))
-			//{
-				//mFlatX = GetRandom(xMin, xMax);
-				//mFlatZ = GetRandom(zMin, zMax);
-			//}
-		}
-		*mFlats[i]->GetPosition() = AvoidQuad(rY, xMin + 0.1f, xMax - 0.1f, zMin + 0.1f, zMax - 0.1f, minXAvoid -.5f, maxXAvoid + .5f, minZAvoid -.5f , maxZAvoid + .5f);
-		*mFlats[i]->GetRotation() = Vector3(0, GetRandom(0.f, 2 * PI), 0);
-		//mFlats[i]->GetScale() = Vector3(0.1f, rY, 0.1f);
-		switch (GetRandom(0, 3)) {
-		case 0:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building1.dds", true, gd3dDevice);
-			break;
-		case 1:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
-			break;
-		case 2:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building3.dds", true, gd3dDevice);
-			break;
-		case 3:
-			mat.pTextureRV = mFX.mCache.LoadTexture("building4.dds", true, gd3dDevice);
-			break;
-		}
-		mCube->SetOverrideMat(&mat);
-
-
-		FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(1, 1, 1), Vector3(0.15f, 0.15f, 0.15f), Vector3(0.25f, 0.25f, 0.25f));
-
-	}
-
 
 }
 
