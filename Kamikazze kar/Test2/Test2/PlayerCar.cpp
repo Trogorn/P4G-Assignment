@@ -109,18 +109,20 @@ void PlayerCar::UpdateCamera(float dTime)
 		}
 	}
 
-	// Check distance Z (local)
-	if (Offset2Camera.z > CameraDistance.y)
+	//Check distance Z (local, negative = backwards from front of car)
+	if (Offset2Camera.z < -CameraDistance.y)
 	{
-		cameraPosL.z = OffsetL.z + CameraDistance.y;
+		cameraPosL.z = OffsetL.z + -CameraDistance.y;
 	}
 	else
 	{
-		if (Offset2Camera.z < -CameraDistance.y)
+		//Check distance Z (local, positive = towards front of car)
+		if (Offset2Camera.z > CameraDistance.y/2)
 		{
-			cameraPosL.z = OffsetL.z + -CameraDistance.y;
+			cameraPosL.z = OffsetL.z + CameraDistance.y/2;
 		}
 	}
+
 
 	MyDebug::Message(std::to_string(Offset2Camera.z));
 	MyDebug::Message(std::to_string(CameraDistance.y));

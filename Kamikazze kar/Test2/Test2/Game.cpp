@@ -363,7 +363,10 @@ void Game::Render(float dTime)
 
 	player.Render(&mFX);
 
+
+
 	//-- Display Text-----------------------------------------------------------------------
+
 	CommonStates state(gd3dDevice);
 	//Setup Sprite Batch
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
