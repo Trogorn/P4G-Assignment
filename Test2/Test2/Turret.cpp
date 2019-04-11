@@ -79,7 +79,7 @@ Vector3 Turret::GetShort()
 //	Shoot();
 	Vector3 dir(0, 0, 1);
 	dir = Vector3::TransformNormal(dir, Matrix::CreateFromYawPitchRoll(yaw, pitch, roll));
-	return mCamPos + dir * shortestdistrance;
+	return mCamPos + dir * shortestdistance;
 }
 
 void Turret::Rotate(float dTime, float _yaw, float _pitch, float _roll)
@@ -99,7 +99,7 @@ Model_Kami* Turret::Shoot()
 {
 
 	
-	shortestdistrance = distance;
+	shortestdistance = distance;
 	Model_Kami* box = nullptr;
 	bool hit = false;
 
@@ -113,9 +113,9 @@ Model_Kami* Turret::Shoot()
 		{
 			float dummydistance(distance);
 		
-			if (mpMyVec->at(i)->RetAlive() &&ray.Intersects(mpMyVec->at(i)->GetColider(), _Out_ dummydistance) && dummydistance < shortestdistrance)
+			if (mpMyVec->at(i)->RetAlive() &&ray.Intersects(mpMyVec->at(i)->GetColider(), _Out_ dummydistance) && dummydistance < shortestdistance)
 			{
-				shortestdistrance = dummydistance;
+				shortestdistance = dummydistance;
 				box = mpMyVec->at(i);
 				hit = true;
 			}
@@ -125,7 +125,7 @@ Model_Kami* Turret::Shoot()
 
 	if (hit)
 	{
-		hitPosition = origin + direction * shortestdistrance;
+		hitPosition = origin + direction * shortestdistance;
 
 		//Damage linked reference in box if it has one
 	}

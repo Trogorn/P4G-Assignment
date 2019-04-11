@@ -151,9 +151,9 @@ void Game::Initialise()
 	mat = mQuad2->GetMesh().GetSubMesh(0).material;
 	mat.pTextureRV = mFX.mCache.LoadTexture("building2.dds", true, gd3dDevice);
 	mat.texture = "building2.dds";
-	mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
-	mQuad2->GetRotation() = Vector3(0, 0, 0);
-	mQuad2->GetScale() = Vector3(1, 1, 1);
+	*mQuad2->GetPosition() = Vector3(-1, 0.01f, -1);
+	*mQuad2->GetRotation() = Vector3(0, 0, 0);
+	*mQuad2->GetScale() = Vector3(1, 1, 1);
 	mQuad2->SetOverrideMat(&mat);
 	//*/
 

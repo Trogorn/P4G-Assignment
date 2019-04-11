@@ -39,7 +39,7 @@ public:
 private:
 	
 	std::vector<Model_Kami*> *mpMyVec;
-	float shortestdistrance;
+	float shortestdistance;
 	DirectX::SimpleMath::Vector3 hitPosition;
 	DirectX::SimpleMath::Vector3 origin; 
 	DirectX::SimpleMath::Vector3 direction;
