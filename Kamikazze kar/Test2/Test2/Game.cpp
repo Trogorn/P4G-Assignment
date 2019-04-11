@@ -242,7 +242,7 @@ void Game::Initialise()
 	mpFont2 = new SpriteFont(gd3dDevice, L"../bin/data/algerian.spritefont");
 	assert(mpFont2);
 
-	mLoadData.totalToLoad = 5;
+	mLoadData.totalToLoad = 104;
 	mLoadData.loadedSoFar = 0;
 	mLoadData.running = true;
 
