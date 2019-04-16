@@ -9,7 +9,7 @@ void Car::Initialise(Model_Kami* mModel, float turnSpeed, float drag, float acce
 {
 	this->speed = speed;
 	this->turnSpeed = turnSpeed;
-	this->drag = drag;
+	this->friction = drag;
 	this->acceleration = acceleration;
 	this->brakingForce = brakingForce;
 	this->maxSpeed = maxSpeed;
@@ -42,83 +42,147 @@ void Car::UpdateControlVector()
 	// AI cars will update this from ai calculations
 }
 
-//This function updates speed value, and turn degrees/radians
+
+//Updated Movement function
+
 void Car::UpdateMovement(float dTime)
 {
 
-	//Redo this to make sure its all local
+	//LONGITUDE (forward/back)=============================================================
 
-	//ACCELERATION/DRAG---------------------------------------------------------------------------------------------------------------
+	//Friction
 
-	//Control vector contains:
-	// y accel -1 = full brake/reverse  0 = coast  1 = full accel
-	// x turning -1 = full left  0 = no turn  1 = full right
+	friction = max(speed*friction_Constant, friction_Constant);
 
-	//Speed should be a float indicating how fast the vehicle is moving
+	//Accelerating force
+	force = acceleration_force*controlVector.y - friction;
 
-	//If accelerating
-	if (controlVector.y > 0)
+	//Acceleration
+	acceleration = force / mass;
+
+	//Speed
+	speed += acceleration;
+
+	//TURNING================================================================
+
+	float radius = abs(speed * controlVector.y);
+
+	//Turning left or right
+	//Positive = right
+	//Negative = left
+	int sign;
+	if (controlVector.y < 0)
 	{
-		speed += acceleration * controlVector.y * dTime;
+		sign = -1;
 	}
 	else
 	{
-		//If braking
-		if (controlVector.y < 0)
+		if (controlVector.y == 0)
 		{
-			speed += brakingForce * controlVector.y * dTime;
+			sign = 0;
+		}
+		else
+		{
+			sign = 1;
 		}
 	}
 
-	//Limit max speed
-	if (speed > maxSpeed)
+	Vector3 centre;
+	if (controlVector.y < 0)
 	{
-		speed = maxSpeed;
-	}
-	else
-	{
-		if (speed < -reverseSpeed)
-		{
-			speed = -reverseSpeed;
-		}
+		centre.x += radius * sign;
 	}
 
-	//speed += (controlVector.y * acceleration) * dTime;
-	// maybe rework this to get something that feels nicer?
+	// Get local position car is moving to
 
+	Vector3 Position = Vector3::Zero;
 
-	//Mess around with drag
-	if (speed > 0)
-	{
-		speed -= drag * dTime;
-	}
-	else
-		if (speed < 0)
-		{
-			speed += drag * dTime;
-		}
+	Position.x = radius*cos(dTime)*sign;
+	Position.z = radius*sin(dTime);
 
+	//Convert local postion to world position
 
-	//Turning probably moved to updateworld object
-
-	////TURNING------------------------------------------------------------------------------------------------------------------------
-
-	////Convert turnspeed into rads and multiply by controlVector to get distance to rotate
-	//float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime;
-
-	////Create Rotation matrix from radians
-	//Matrix m = Matrix::CreateRotationY(turn);
-
-	////Transform direction by rotation matrix
-	//direction = direction.TransformNormal(direction, m);
-
-	//// If direction is not currently a unit vector, normalize it
-	//if (direction.LengthSquared() != 1)
-	//{
-	//	direction.Normalize();
-	//}
+	//Move car to world position
 
 }
+
+////This function updates speed value, and turn degrees/radians
+//void Car::UpdateMovement(float dTime)
+//{
+//
+//	//Redo this to make sure its all local
+//
+//	//ACCELERATION/DRAG---------------------------------------------------------------------------------------------------------------
+//
+//	//Control vector contains:
+//	// y accel -1 = full brake/reverse  0 = coast  1 = full accel
+//	// x turning -1 = full left  0 = no turn  1 = full right
+//
+//	//Speed should be a float indicating how fast the vehicle is moving
+//
+//	//If accelerating
+//	if (controlVector.y > 0)
+//	{
+//		speed += acceleration * controlVector.y * dTime;
+//	}
+//	else
+//	{
+//		//If braking
+//		if (controlVector.y < 0)
+//		{
+//			speed += brakingForce * controlVector.y * dTime;
+//		}
+//	}
+//
+//	//Limit max speed
+//	if (speed > maxSpeed)
+//	{
+//		speed = maxSpeed;
+//	}
+//	else
+//	{
+//		if (speed < -reverseSpeed)
+//		{
+//			speed = -reverseSpeed;
+//		}
+//	}
+//
+//	//speed += (controlVector.y * acceleration) * dTime;
+//	// maybe rework this to get something that feels nicer?
+//
+//
+//	//Mess around with drag
+//	if (speed > 0)
+//	{
+//		speed -= friction * dTime;
+//	}
+//	else
+//		if (speed < 0)
+//		{
+//			speed += friction * dTime;
+//		}
+//
+//
+//	//Turning probably moved to updateworld object
+//
+//	////TURNING------------------------------------------------------------------------------------------------------------------------
+//
+//	////Convert turnspeed into rads and multiply by controlVector to get distance to rotate
+//	//float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime;
+//
+//	////Create Rotation matrix from radians
+//	//Matrix m = Matrix::CreateRotationY(turn);
+//
+//	////Transform direction by rotation matrix
+//	//direction = direction.TransformNormal(direction, m);
+//
+//	//// If direction is not currently a unit vector, normalize it
+//	//if (direction.LengthSquared() != 1)
+//	//{
+//	//	direction.Normalize();
+//	//}
+//
+//}
 
 
 //This function updates the actual position and rotation of the model/object

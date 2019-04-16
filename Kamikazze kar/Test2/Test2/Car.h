@@ -36,8 +36,12 @@ private:
 	
 	int health;
 	float turnSpeed;
-	float drag;
+	float friction;
+	const float friction_Constant;
+	float force;
 	float acceleration;
+	const float acceleration_force;
+	const float mass;
 	float brakingForce;
 	float maxSpeed;
 	float reverseSpeed;
