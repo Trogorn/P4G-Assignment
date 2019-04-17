@@ -106,6 +106,8 @@ private:
 
 	PlayerCar player;
 
+	EnvironmentBuilder BobTBuilder;
+
 
 };
 

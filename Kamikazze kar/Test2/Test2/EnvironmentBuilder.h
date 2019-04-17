@@ -29,10 +29,22 @@ public:
 
 	EnvironmentBuilder() {};
 	
+	MeshManager mMeshMgr;
+	Model_Kami *mQuad1, *mQuad2, *mCube, *mTent, *mQuadPyramid, *mLight, mCar;
+	std::vector<Model_Kami*> mFlats;
+	FX::MyFX mFX;
+
+	void BuildFloor();
+	void BuildAvoidedFloor();
+	void BuildSkyscraper();
+	void BuildTrees();
+	void BuildObstacles();
+	void RenderEnvironment();
 
 protected:
 
 private:
+
 
 
 };
