@@ -63,15 +63,15 @@ void Game::Load()
 
 void Game::LoadMap()
 {
-	//get the image
-	int x, y, n;
-	unsigned char *data = stbi_load("../bin/data/TheRock.jpg", &x, &y, &n, 0);
-	assert(n == 3);
+	int width, height, components;
+	const char* filePath = "../bin/data/TheRock.jpg";
+	//Load the main background image (track with grass)
+	unsigned char *data = stbi_load(filePath, &width, &height, &components, 0);
+	assert(components == 3); //The number of components must be 3 (RGB)
 	//promote to 32bit, DX11 textures are RedGreenBlueAlpha (8bit per channel)
-	//but the image was RGB 8bit which is annoying
-	unsigned char *data32 = new unsigned char[4 * x*y];
+	unsigned char *data32 = new unsigned char[4 * width * height];
 	unsigned char* pSource = data, *pDest = data32;
-	for (int i = 0; i < (x*y); ++i)
+	for (int i = 0; i < (width * height); ++i)
 	{
 		for (int ii = 0; ii < 3; ii++)
 		{
@@ -85,8 +85,8 @@ void Game::LoadMap()
 
 	//create a texture to match, yuck, this M$ code is nasty looking
 	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = x;
-	desc.Height = y;
+	desc.Width = width;
+	desc.Height = height;
 	desc.MipLevels = desc.ArraySize = 1;
 	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.SampleDesc.Count = 1;
@@ -103,7 +103,7 @@ void Game::LoadMap()
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	HR(gd3dImmediateContext->Map(pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 	//copy the image data across
-	memcpy(mappedResource.pData, data32, sizeof(unsigned char)*x*y * 4);
+	memcpy(mappedResource.pData, data32, sizeof(unsigned char)* width * height * 4);
 	gd3dImmediateContext->Unmap(pTexture, 0);
 	//free our data, DX has it now
 	stbi_image_free(data);
@@ -117,19 +117,18 @@ void Game::LoadMap()
 	resViewDesc.Texture2D.MipLevels = 1;
 	MaterialExt *pMat = &mQuad.GetMesh().GetSubMesh(0).material;
 	HR(gd3dDevice->CreateShaderResourceView(pTexture, &resViewDesc, &pMat->pTextureRV));
-	//we should really tell the texture cache about this or it won't get deleted :)
 
 
 	//load the map and convert to a 2d array
-	data = stbi_load("../bin/data/TheRockMap.jpg", &x, &y, &n, 0);
-	assert(n == 3);
-	assert(x == MAP_WIDTH && y == MAP_WIDTH);
-	for (int xi = 0; xi < MAP_WIDTH; ++xi)
-		for (int yi = 0; yi < MAP_WIDTH; ++yi)
+	data = stbi_load("../bin/data/TheRockMap.jpg", &width, &height, &components, 0);
+	assert(components == 3); //Image must use RGB
+	assert(width == MAP_WIDTH && height == MAP_WIDTH);
+	for (int xIndex = 0; xIndex < MAP_WIDTH; ++xIndex)
+		for (int yIndex = 0; yIndex < MAP_WIDTH; ++yIndex)
 		{
-			MapData& d = trees[MAP_WIDTH - 1 - yi][xi]; //invert it so it's orientated with the world coordinate system
-			d.tree = (data[yi*y * 3 + xi * 3] > 200) ? true : false; //red?
-			d.head = (data[yi*y * 3 + xi * 3 + 1] > 200) ? true : false; //green?
+			MapData& d = trees[MAP_WIDTH - 1 - yIndex][xIndex]; //invert it so it's orientated with the world coordinate system
+			d.tree = (data[yIndex * height * 3 + xIndex * 3] > 200) ? true : false; //red?
+			d.head = (data[yIndex * height * 3 + xIndex * 3 + 1] > 200) ? true : false; //green?
 		}
 
 	stbi_image_free(data);
@@ -282,7 +281,7 @@ void Game::Render(float dTime)
 				mFX.Render(mCube, gd3dImmediateContext);
 			}
 
-
+	/*
 	CommonStates state(gd3dDevice);
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
@@ -328,6 +327,7 @@ void Game::Render(float dTime)
 
 	mpSpriteBatch->End();
 
+	*/
 
 	EndRender();
 
