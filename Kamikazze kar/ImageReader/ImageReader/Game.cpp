@@ -49,12 +49,15 @@ void Game::Load()
 	mTorch.Initialise(BuildSphere(mMeshMgr, 16,16));
 	pMat = &mTorch.GetMesh().GetSubMesh(0).material;
 	pMat->gfxData.Set(Vector4(1, 0, 0, 1), Vector4(1, 0, 0, 1), Vector4(1, 0, 0, 1));
-	mTorch.GetScale() = Vector3(0.1f, 0.1f, 0.1f);// Vector3(0.2f, 0.1f, 0.1f);
-	mTorch.GetPosition() = Vector3(0, 0.2f, 0);
+	mTorch.GetPosition() = Vector3(-100, -100, -100);
 	mLoadData.loadedSoFar++;
 
 	mCube.Initialise(BuildCube(mMeshMgr));
 	mLoadData.loadedSoFar++;
+
+	
+
+	mBallSim.Initialise(mMeshMgr);
 
 }
 
@@ -223,6 +226,7 @@ void Game::Update(float dTime)
 	mCamPos.x += mGamepad.GetState(0).leftStickX * dTime;
 	mCamPos.z += mGamepad.GetState(0).leftStickY * dTime;
 	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
+
 }
 
 
@@ -250,6 +254,8 @@ void Game::Render(float dTime)
 
 	MaterialExt mat = MaterialExt::default;
 
+	mBallSim.Render(mFX, dTime);
+
 	//floor
 	mQuad.GetPosition() = Vector3(0, 0, 0);
 	mQuad.GetRotation() = Vector3(0, 0, 0);
@@ -263,7 +269,7 @@ void Game::Render(float dTime)
 		for (int y = 0; y < MAP_WIDTH; ++y)
 			if(trees[y][x].tree)
 			{
-				//it's a tree cube thingy
+				//Red dot
 				mCube.GetPosition() = Vector3(x*wscale+offset, 0.1f, y*wscale+offset);
 				mCube.GetScale() = Vector3(0.05f, 0.1f, 0.05f);
 				mFX.Render(mCube, gd3dImmediateContext);
@@ -271,10 +277,14 @@ void Game::Render(float dTime)
 			else if (trees[y][x].head)
 			{
 				//Green dot
+				mCube.GetPosition() = Vector3(x*wscale + offset, 0.1f, y*wscale + offset);
+				mCube.GetScale() = Vector3(0.05f, 0.1f, 0.05f);
+				mFX.Render(mCube, gd3dImmediateContext);
 			}
 
 
 	CommonStates state(gd3dDevice);
+	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
 	wstring mssg, mssg2;
 	if (mMKInput.GetMouseButton(MouseAndKeys::LBUTTON))
@@ -303,6 +313,20 @@ void Game::Render(float dTime)
 		mQuad.GetScale() = Vector3(0.2f, 0.2f, 0.2f);
 		mFX.Render(mQuad, gd3dImmediateContext, &mat);
 	}
+
+
+
+	//general messages
+	wstringstream ss;
+	if (dTime > 0)
+		ss << L"FPS: " << (int)(1.f / dTime);
+	else
+		ss << L"FPS: 0";
+	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 550), Colours::White, 0, Vector2(0, 0), Vector2(0.5f, 0.5f));
+
+	mBallSim.RenderText(mpFont, mpSpriteBatch);
+
+	mpSpriteBatch->End();
 
 
 	EndRender();

@@ -3547,11 +3547,6 @@ inline bool Ray::Intersects( const BoundingBox& box, _Out_ float& Dist ) const
     return box.Intersects( position, direction, Dist );
 }
 
-inline bool Ray::Intersects( const BoundingOrientedBox& box, _Out_ float& Dist ) const
-{
-    return box.Intersects( position, direction, Dist );
-}
-
 inline bool Ray::Intersects( const Vector3& tri0, const Vector3& tri1, const Vector3& tri2, _Out_ float& Dist ) const
 {
     return DirectX::TriangleTests::Intersects( position, direction, tri0, tri1, tri2, Dist );

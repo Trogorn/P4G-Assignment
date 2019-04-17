@@ -38,7 +38,7 @@ public:
 	//ensure each mesh is loaded and release exactly once
 	MeshManager mMeshMgr;
 	//game models that reference meshes
-	Model mQuad, mTorch, mCube, mRock;
+	Model mQuad, mCube, mTorch;
 	//handy rendering state
 	FX::MyFX mFX;
 
