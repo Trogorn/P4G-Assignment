@@ -5,12 +5,11 @@ class MyUtils
 public:
 	MyUtils();
 	~MyUtils();
-	static float Deg2Rad(float deg);
-	static float Rad2Deg(float rad);
+	static float Deg2Rad;
+	static float Rad2Deg;
 
 private:
-	static float deg2rad;
-	static float rad2deg;
+	
 };
 
 #endif

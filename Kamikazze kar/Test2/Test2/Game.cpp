@@ -129,7 +129,8 @@ void Game::Initialise()
 	mCamera.Funcy(mFlats);
 	mMKInput.Initialise(GetMainWnd(), false, true);
 	mCamera.LockMovementAxis(Turret::UNLOCK, -9.5f, Turret::UNLOCK);
-	player.Initialise(&mMKInput, &mGamepad, &mCar, 90, 0.01f, 0.1f, 0.1f, 10.f, 5.f, &mCamera);
+	player.Initialise(&mMKInput, &mGamepad, &mCar, 5, 0.5f, 1, 1, 1, 1, 1,&mCamera);
+	player.GetPosition()->y = 1;
 	//Rob floor
 	///*
 
@@ -377,7 +378,7 @@ void Game::Render(float dTime)
 	else
 		ss << L"FPS: 0";
 
-	player.Debug();
+	//player.Debug();
 
 	ss << MyDebug::GetDebugMessage().c_str();
 	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 0), Colours::White, 0, Vector2(0, 0), Vector2(1.f, 1.f));

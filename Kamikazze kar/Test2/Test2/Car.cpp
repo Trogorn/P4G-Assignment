@@ -5,20 +5,20 @@ Car::Car():GameObject()
 {
 }
 
-void Car::Initialise(Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed)
+void Car::Initialise(Model_Kami* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed)
 {
-	this->speed = speed;
-	this->turnSpeed = turnSpeed;
-	this->friction = drag;
-	this->acceleration = acceleration;
-	this->brakingForce = brakingForce;
-	this->maxSpeed = maxSpeed;
-	this->reverseSpeed = reverseSpeed;
-	direction = direction.UnitZ;
-	//GameObject* pGO = this;
-	//pGO->Initialise(mModel);
-	GameObject::Initialise(mModel);
+	ACCELERATION_CONST	=	Acceleration_Const;
+	MASS				=	Mass;
+	BRAKING_CONST		=	Braking_Const;
+	MIN_RADIUS			=	Min_Radius;
+	TURNING_MOD			=	Turning_Mod;
+	MIN_TURNING_SPEED	=	Min_Turning_Speed;
+	FRICTION_CONST		=	Friction_Const;
+	speed = 0;
+	force = 0;
+	radius = 0;
 
+	GameObject::Initialise(mModel);
 }
 
 
@@ -47,187 +47,129 @@ void Car::UpdateControlVector()
 
 void Car::UpdateMovement(float dTime)
 {
-
-	//LONGITUDE (forward/back)=============================================================
-
-	//Friction
-
-	friction = max(speed*friction_Constant, friction_Constant);
-
-	//Accelerating force
-	force = acceleration_force*controlVector.y - friction;
-
-	//Acceleration
-	acceleration = force / mass;
-
-	//Speed
-	speed += acceleration;
-
-	//TURNING================================================================
-
-	float radius = abs(speed * controlVector.y);
-
-	//Turning left or right
-	//Positive = right
-	//Negative = left
-	int sign;
-	if (controlVector.y < 0)
+	//Acceleration and Braking
+	//========================================================================
+	float throttle = controlVector.y;
+	if (!(throttle < 0))
 	{
-		sign = -1;
+		//If not braking
+		//Work out force then add frictional force
+		force = (ACCELERATION_CONST * throttle) - (speed * FRICTION_CONST);
 	}
 	else
 	{
-		if (controlVector.y == 0)
-		{
-			sign = 0;
-		}
-		else
-		{
-			sign = 1;
-		}
+		//If braking
+		//Work out force then add the frictional force
+		force = (-BRAKING_CONST * abs(throttle)) - (speed * FRICTION_CONST);
 	}
+	
+	speed += (force / MASS) * dTime;
+	MyDebug::Message("Force: " + std::to_string(force));
+	MyDebug::Message("Speed: " + std::to_string(speed));
+	//=====================================================================
 
-	Vector3 centre;
-	if (controlVector.y < 0)
+	//Turning Mechanics
+	//=======================================================================
+	float wheel = controlVector.x;
+
+	//If Turning
+	if (wheel != 0)
 	{
-		centre.x += radius * sign;
+		if (speed > MIN_TURNING_SPEED)
+		{
+			radius = MIN_RADIUS + (speed * TURNING_MOD);
+			float CarAngle,radiusAngle,deltaAngle,newAngle;
+			//Turn left
+			if (wheel < 0)
+			{
+				//Get CarAngle
+				CarAngle = GetRotation()->y;
+
+				//Get the angle from Centre of cirle to car
+				radiusAngle = CarAngle - 180;
+
+				//Calculate Angle car travels through
+				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime;
+
+				//Calculate Angle Car should be at after turning
+				newAngle = radiusAngle - deltaAngle;
+			}
+			//Turn Right
+			else
+			{
+				//Get CarAngle
+				CarAngle = GetRotation()->y;
+				//Get the angle from Centre of cirle to car
+				radiusAngle = CarAngle;
+				//Calculate Angle car travels through
+				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime;
+				//Calculate Angle Car should be at after turning
+				newAngle = radiusAngle + deltaAngle;
+			}
+
+
+			//Pos Relative to centre Pos
+			Vector3 CarPos = Vector3::Zero;
+			CarPos.z = radius * -cos(radiusAngle * MyUtils::Deg2Rad);
+			CarPos.x = radius * sin(radiusAngle * MyUtils::Rad2Deg);
+			CarPos.y = GetPosition()->y;
+
+			/*MyDebug::Message("Car Pos X: " + std::to_string(CarPos.x));
+			MyDebug::Message("Car Pos Y: " + std::to_string(CarPos.y));
+			MyDebug::Message("Car Pos Z: " + std::to_string(CarPos.z));*/
+
+
+			//Calculate Centre Position
+			Vector3 centrePos = Vector3::Zero;
+			centrePos = *GetPosition() - CarPos;
+			centrePos.y = GetPosition()->y;
+
+			//Calulcate Cars new Position
+			Vector3 NewPos = Vector3::Zero;
+			NewPos.z = radius * -cos(newAngle * MyUtils::Deg2Rad) + centrePos.x;
+			NewPos.x = radius * sin(newAngle * MyUtils::Deg2Rad) + centrePos.z;
+			NewPos.y = GetPosition()->y;
+
+			*GetPosition() = NewPos;
+
+			//Turn Left
+			if (wheel < 0)
+			{
+				*GetRotation() = Vector3(0, GetRotation()->y - deltaAngle, 0);
+			}
+			//Turn Right
+			else
+			{
+				*GetRotation() = Vector3(0, GetRotation()->y + deltaAngle, 0);
+			}
+
+			/*MyDebug::Message("Centre pos X: " + std::to_string(centrePos.x));
+			MyDebug::Message("Centre pos Y: " + std::to_string(centrePos.y));
+			MyDebug::Message("Centre pos Z: " + std::to_string(centrePos.z));*/
+		}
 	}
-
-	// Get local position car is moving to
-
-	Vector3 Position = Vector3::Zero;
-
-	Position.x = radius*cos(dTime)*sign;
-	Position.z = radius*sin(dTime);
-
-	//Convert local postion to world position
-
-	//Move car to world position
-
+	//If Not Turning
+	else
+	{
+		//This doesn't work right
+		Vector3 Pos = Vector3::Zero;
+		Pos.z = speed;
+		MyDebug::Message("Pos Before" + std::to_string(Pos.z));
+		Vector3::Transform(Pos,this->GetWorldMatrix(),Pos);
+		MyDebug::Message("Pos After" + std::to_string(Pos.z));
+	}
+	//=======================================================================
 }
 
-////This function updates speed value, and turn degrees/radians
-//void Car::UpdateMovement(float dTime)
-//{
-//
-//	//Redo this to make sure its all local
-//
-//	//ACCELERATION/DRAG---------------------------------------------------------------------------------------------------------------
-//
-//	//Control vector contains:
-//	// y accel -1 = full brake/reverse  0 = coast  1 = full accel
-//	// x turning -1 = full left  0 = no turn  1 = full right
-//
-//	//Speed should be a float indicating how fast the vehicle is moving
-//
-//	//If accelerating
-//	if (controlVector.y > 0)
-//	{
-//		speed += acceleration * controlVector.y * dTime;
-//	}
-//	else
-//	{
-//		//If braking
-//		if (controlVector.y < 0)
-//		{
-//			speed += brakingForce * controlVector.y * dTime;
-//		}
-//	}
-//
-//	//Limit max speed
-//	if (speed > maxSpeed)
-//	{
-//		speed = maxSpeed;
-//	}
-//	else
-//	{
-//		if (speed < -reverseSpeed)
-//		{
-//			speed = -reverseSpeed;
-//		}
-//	}
-//
-//	//speed += (controlVector.y * acceleration) * dTime;
-//	// maybe rework this to get something that feels nicer?
-//
-//
-//	//Mess around with drag
-//	if (speed > 0)
-//	{
-//		speed -= friction * dTime;
-//	}
-//	else
-//		if (speed < 0)
-//		{
-//			speed += friction * dTime;
-//		}
-//
-//
-//	//Turning probably moved to updateworld object
-//
-//	////TURNING------------------------------------------------------------------------------------------------------------------------
-//
-//	////Convert turnspeed into rads and multiply by controlVector to get distance to rotate
-//	//float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime;
-//
-//	////Create Rotation matrix from radians
-//	//Matrix m = Matrix::CreateRotationY(turn);
-//
-//	////Transform direction by rotation matrix
-//	//direction = direction.TransformNormal(direction, m);
-//
-//	//// If direction is not currently a unit vector, normalize it
-//	//if (direction.LengthSquared() != 1)
-//	//{
-//	//	direction.Normalize();
-//	//}
-//
-//}
 
-
-//This function updates the actual position and rotation of the model/object
-//might merge this with Update Movement
 void Car::UpdateGameObject(float dTime)
 {
-	//Update this to make sure its all local 2 World space
 
-	//If working with local space speed would be a vector heading straight forward
-	//The object would get rotated in world space, causing said speed vector to be rotated as well.
-
-	//So each frame the order would be this
-
-	//Update speed
-	//Calculate change in direction?
-	//Rotate object
-	//Move object forward by speed
-
-
-	//Update Speed s above in update movement
-
-	// Next thing is to calculate turning
-
-	// So using control vector work out how many degrees/radians the 'car' has turned by?
-	float turn = MyUtils::Deg2Rad(turnSpeed) * controlVector.x * dTime; //This line should work for that
-
-	// Rotate 'car' by this amount
-	// Rotate car by turn
-	//Car shouldn't be able to turn on the spot now
-	// Maybe link the more to speed like
-	// += turn / speed?
-	// and if speed < x turn doesn't work?
-	if (speed != 0)
-	{
-		GetRotation()->y += turn;
-	}
-
-	// Move 'car' 'forward'
-	*GetPosition() = Vector3::Transform(speed * Vector3::UnitZ, GetWorldMatrix());
 }
 
 //Can be used to increase or decrease health
 void Car::UpdateHealth(int amount)
 {
-	health += amount;
 }
 
 Car::~Car()

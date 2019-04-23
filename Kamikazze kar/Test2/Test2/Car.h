@@ -9,7 +9,7 @@ class Car : public GameObject
 {
 public:
 	Car();
-	void Initialise(Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed);
+	void Initialise(Model_Kami* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed);
 	void OnCollide(const GameObject* apOther);
 	void Update(float dTime);
 	virtual ~Car();
@@ -34,17 +34,15 @@ private:
 	Vector3 direction;
 
 	
-	int health;
-	float turnSpeed;
-	float friction;
-	const float friction_Constant;
+	float ACCELERATION_CONST;
+	float FRICTION_CONST;
+	float MASS;
+	float BRAKING_CONST;
+	float MIN_RADIUS;
+	float TURNING_MOD;
+	float MIN_TURNING_SPEED;
 	float force;
-	float acceleration;
-	const float acceleration_force;
-	const float mass;
-	float brakingForce;
-	float maxSpeed;
-	float reverseSpeed;
+	float radius;
 
 	//void Update(float) overridden
 

@@ -6,13 +6,23 @@ PlayerCar::PlayerCar() :Car()
 	camera.Initialise(103, this);
 }
 
-//Some things don't work with the scale needs to be fixed
-void PlayerCar::Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed, Turret* turret)
+//MKInput = Mouse/Keyboard Input
+//Gamepad = Gamepad Input
+//mModel = Model of playerCar
+//Acceleration_Const = Force Accelerating the Car
+//Friction_Const = Percentage of Current speed Car loses per frame
+//Mass = Mass of the car in KiloGrams
+//Braking_Const = Force Braking the Car
+//Min_Radius = The smallest turning radius the car can turn
+//Turning_Mod = How much the speed affects the turning radius of the car
+//Min_Turning_Speed = Minium Speed the car must be travelling in order to turn (usually 1)
+
+void PlayerCar::Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, Turret* turret)
 {
 	this->turret = turret;
 	this->MKInput = MKInput;
 	this->GamePad = GamePad;
-	Car::Initialise(mModel, turnSpeed, drag, acceleration, brakingForce, maxSpeed, reverseSpeed);
+	Car::Initialise(mModel, Acceleration_Const, Friction_Const, Mass, Braking_Const, Min_Radius, Turning_Mod, Min_Turning_Speed);
 
 	CameraOffSetV = Vector3(0.f, 1.f, -2.f);
 	CameraOffSetD = 2.f;
@@ -124,9 +134,9 @@ void PlayerCar::UpdateCamera(float dTime)
 	}
 
 
-	MyDebug::Message(std::to_string(Offset2Camera.z));
-	MyDebug::Message(std::to_string(CameraDistance.y));
-	MyDebug::Message(std::to_string(cameraPosL.z));
+	//MyDebug::Message(std::to_string(Offset2Camera.z));
+	//MyDebug::Message(std::to_string(CameraDistance.y));
+	//MyDebug::Message(std::to_string(cameraPosL.z));
 
 
 	//Convert Back to world coordinates and send to the Camera
