@@ -63,15 +63,14 @@ void Car::UpdateMovement(float dTime)
 		force = (-BRAKING_CONST * abs(throttle)) - (speed * FRICTION_CONST);
 	}
 	
-	speed += (force / MASS) * dTime;
-	MyDebug::Message("Force: " + std::to_string(force));
-	MyDebug::Message("Speed: " + std::to_string(speed));
+	float acceleration = force / MASS;
+	speed += acceleration * dTime;
+	MyDebug::Message(speed);
 	//=====================================================================
 
 	//Turning Mechanics
 	//=======================================================================
 	float wheel = controlVector.x;
-
 	//If Turning
 	if (wheel != 0)
 	{
@@ -79,6 +78,8 @@ void Car::UpdateMovement(float dTime)
 		{
 			radius = MIN_RADIUS + (speed * TURNING_MOD);
 			float CarAngle,radiusAngle,deltaAngle,newAngle;
+			Vector3 CarPos = Vector3::Zero;
+			Vector3 NewPos = Vector3::Zero;
 			//Turn left
 			if (wheel < 0)
 			{
@@ -86,13 +87,15 @@ void Car::UpdateMovement(float dTime)
 				CarAngle = GetRotation()->y;
 
 				//Get the angle from Centre of cirle to car
-				radiusAngle = CarAngle - 180;
+				radiusAngle = (CarAngle) * MyUtils::Rad2Deg;
 
 				//Calculate Angle car travels through
 				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime;
 
 				//Calculate Angle Car should be at after turning
-				newAngle = radiusAngle - deltaAngle;
+				newAngle = radiusAngle + deltaAngle;
+
+
 			}
 			//Turn Right
 			else
@@ -100,24 +103,28 @@ void Car::UpdateMovement(float dTime)
 				//Get CarAngle
 				CarAngle = GetRotation()->y;
 				//Get the angle from Centre of cirle to car
-				radiusAngle = CarAngle;
+				radiusAngle = CarAngle * MyUtils::Rad2Deg;
+
 				//Calculate Angle car travels through
 				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime;
+
 				//Calculate Angle Car should be at after turning
 				newAngle = radiusAngle + deltaAngle;
+
 			}
+
+			MyDebug::Message(deltaAngle);
+			MyDebug::Message(newAngle);
 
 
 			//Pos Relative to centre Pos
-			Vector3 CarPos = Vector3::Zero;
-			CarPos.z = radius * -cos(radiusAngle * MyUtils::Deg2Rad);
-			CarPos.x = radius * sin(radiusAngle * MyUtils::Rad2Deg);
+			
+			CarPos.x = radius * -cos(radiusAngle * MyUtils::Deg2Rad);
+			CarPos.z = radius * sin(radiusAngle * MyUtils::Deg2Rad);
 			CarPos.y = GetPosition()->y;
 
-			/*MyDebug::Message("Car Pos X: " + std::to_string(CarPos.x));
-			MyDebug::Message("Car Pos Y: " + std::to_string(CarPos.y));
-			MyDebug::Message("Car Pos Z: " + std::to_string(CarPos.z));*/
-
+			MyDebug::Message("Radius Angle: " + std::to_string(radiusAngle));
+			MyDebug::Message("CarPos X: " + std::to_string(CarPos.x));
 
 			//Calculate Centre Position
 			Vector3 centrePos = Vector3::Zero;
@@ -125,9 +132,9 @@ void Car::UpdateMovement(float dTime)
 			centrePos.y = GetPosition()->y;
 
 			//Calulcate Cars new Position
-			Vector3 NewPos = Vector3::Zero;
-			NewPos.z = radius * -cos(newAngle * MyUtils::Deg2Rad) + centrePos.x;
-			NewPos.x = radius * sin(newAngle * MyUtils::Deg2Rad) + centrePos.z;
+			
+			NewPos.x = radius * -cos(newAngle * MyUtils::Deg2Rad) + centrePos.x;
+			NewPos.z = radius * sin(newAngle * MyUtils::Deg2Rad) + centrePos.z;
 			NewPos.y = GetPosition()->y;
 
 			*GetPosition() = NewPos;
@@ -135,28 +142,21 @@ void Car::UpdateMovement(float dTime)
 			//Turn Left
 			if (wheel < 0)
 			{
-				*GetRotation() = Vector3(0, GetRotation()->y - deltaAngle, 0);
+				*GetRotation() = Vector3(0, GetRotation()->y - (deltaAngle* MyUtils::Deg2Rad), 0);
 			}
 			//Turn Right
 			else
 			{
-				*GetRotation() = Vector3(0, GetRotation()->y + deltaAngle, 0);
+				*GetRotation() = Vector3(0, GetRotation()->y + (deltaAngle* MyUtils::Deg2Rad), 0);
 			}
-
-			/*MyDebug::Message("Centre pos X: " + std::to_string(centrePos.x));
-			MyDebug::Message("Centre pos Y: " + std::to_string(centrePos.y));
-			MyDebug::Message("Centre pos Z: " + std::to_string(centrePos.z));*/
 		}
 	}
 	//If Not Turning
 	else
 	{
-		//This doesn't work right
 		Vector3 Pos = Vector3::Zero;
-		Pos.z = speed;
-		MyDebug::Message("Pos Before" + std::to_string(Pos.z));
-		Vector3::Transform(Pos,this->GetWorldMatrix(),Pos);
-		MyDebug::Message("Pos After" + std::to_string(Pos.z));
+		Pos.z = speed * dTime;
+		*GetPosition() = Vector3::Transform(Pos,this->GetWorldMatrix());
 	}
 	//=======================================================================
 }

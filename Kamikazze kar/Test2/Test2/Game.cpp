@@ -145,7 +145,7 @@ void Game::Initialise()
 	mat.texture = "building1.dds";
 	*mQuad1->GetPosition() = Vector3(0, 0, 0);
 	*mQuad1->GetRotation() = Vector3(0, 0, 0);
-	*mQuad1->GetScale() = Vector3(3, 1, 3);
+	*mQuad1->GetScale() = Vector3(10, 1, 10);
 	mQuad1->SetOverrideMat(&mat);
 
 
