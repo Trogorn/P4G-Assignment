@@ -26,7 +26,7 @@ public:
 	void Release();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	std::vector<Model*> mFlats;
-	Model mBox, mQuad, mSkybox, mGun, mCar;
+	Model mBox, mQuad, mSkybox, thrdmGun, fstmGun, mCar;
 
 private:
 	Game& operator=(const Game&) = delete;

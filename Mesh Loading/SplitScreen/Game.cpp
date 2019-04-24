@@ -57,13 +57,23 @@ void Game::Initialise()
 	defMat.flags &= ~MaterialExt::LIT;
 	defMat.flags &= ~MaterialExt::ZTEST;
 
-	Mesh& gm = GetMeshManager()->CreateMesh("gun");
-	gm.CreateFrom("data/Turret.fbx", gd3dDevice, FX::GetMyFX()->mCache);
-	mGun.Initialise(gm);
+	Mesh& tm = GetMeshManager()->CreateMesh("3rdgun");
+	tm.CreateFrom("data/Turret.fbx", gd3dDevice, FX::GetMyFX()->mCache);
+	thrdmGun.Initialise(tm);
 	//mGun = mBox;
-	mGun.GetScale() = Vector3(0.01,0.01,0.01);
-	mGun.GetPosition() = Vector3(0, -0.05, 0);
-	mGun.GetRotation() = Vector3(0,XMConvertToRadians(180),0);
+	thrdmGun.GetScale() = Vector3(0.01,0.01,0.01);
+	thrdmGun.GetPosition() = Vector3(0, 0, 0);
+	thrdmGun.GetRotation() = Vector3(0,XMConvertToRadians(180),0);
+
+
+	Mesh& fm = GetMeshManager()->CreateMesh("1stgun");
+	fm.CreateFrom("data/Turret.fbx", gd3dDevice, FX::GetMyFX()->mCache);
+	fstmGun.Initialise(fm);
+	//mGun = mBox;
+	fstmGun.GetScale() = Vector3(0.01, 0.01, 0.01);
+	fstmGun.GetPosition() = Vector3(0, -0.05, 0);
+	fstmGun.GetRotation() = Vector3(0, XMConvertToRadians(180), 0);
+
 
 	//scale the world
 	mOpaques.push_back(&mQuad);
@@ -158,10 +168,10 @@ void Game::Render(float dTime)
 
 
 	Matrix gm;
-	mGun.GetWorldMatrix(gm);
+	fstmGun.GetWorldMatrix(gm);
 	Matrix cam = mCamera.GetMatrix().Invert();
 	gm = gm * cam;
-	FX::GetMyFX()->Render(mGun, gd3dImmediateContext, nullptr, &gm);
+	FX::GetMyFX()->Render(fstmGun, gd3dImmediateContext, nullptr, &gm);
 
 
 
@@ -179,7 +189,16 @@ void Game::Render(float dTime)
 			FX::GetMyFX()->Render(*mFlats[i], gd3dImmediateContext);
 		mFlats[i]->ColiderUpdate();
 	}
-	FX::GetMyFX()->Render(mGun, gd3dImmediateContext, nullptr, &gm);
+
+
+
+	Matrix cm;
+	thrdmGun.GetWorldMatrix(cm);
+	cm = cm * cam;
+	FX::GetMyFX()->Render(thrdmGun, gd3dImmediateContext, nullptr, &cm);
+
+
+
 
 	EndRender();
 
