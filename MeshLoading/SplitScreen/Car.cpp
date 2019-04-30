@@ -76,7 +76,7 @@ void Car::UpdateMovement(float dTime)
 	{
 		if (speed > MIN_TURNING_SPEED)
 		{
-			radius = MIN_RADIUS + (speed * TURNING_MOD);
+			radius = (MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
 			float CarAngle,radiusAngle,deltaAngle,newAngle;
 			Vector3 CarPos = Vector3::Zero;
 			Vector3 NewPos = Vector3::Zero;
@@ -90,7 +90,7 @@ void Car::UpdateMovement(float dTime)
 				radiusAngle = (CarAngle) * MyUtils::Rad2Deg;
 
 				//Calculate Angle car travels through
-				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime;
+				deltaAngle = ((speed / (PI * (2 * radius)) * 360) * dTime) * GetScale()->x;
 
 				//Calculate Angle Car should be at after turning
 				newAngle = radiusAngle + deltaAngle;
@@ -106,7 +106,7 @@ void Car::UpdateMovement(float dTime)
 				radiusAngle = CarAngle * MyUtils::Rad2Deg;
 
 				//Calculate Angle car travels through
-				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime;
+				deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime * GetScale()->x;
 
 				//Calculate Angle Car should be at after turning
 				newAngle = radiusAngle + deltaAngle;
