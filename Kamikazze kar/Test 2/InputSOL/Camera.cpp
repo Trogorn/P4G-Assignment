@@ -29,7 +29,7 @@ void Camera::Render(FX::MyFX* fx, Vector3 playerPos)
 	Matrix PlayerCamera;
 
 	//Create Projection Matrix to be applied to the Camera
-	CreateProjectionMatrix(FX::GetProjectionMatrix(), MyUtils::Deg2Rad(FOV), AspectRatio, 0.1f, 10.f);
+	CreateProjectionMatrix(FX::GetProjectionMatrix(), FOV * MyUtils::Deg2Rad, AspectRatio, 0.1f, 10.f);
 
 	//Create Camera Matrix
 	CreateViewMatrix(PlayerCamera, position, Vector3(playerPos.x, playerPos.y, playerPos.z) , Vector3(0, 1, 0));

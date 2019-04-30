@@ -12,7 +12,7 @@ public:
 	//Convert these from constructors to initialise/setup function
 	PlayerCar();
 	~PlayerCar();
-	void Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float turnSpeed, float drag, float acceleration, float brakingForce, float maxSpeed, float reverseSpeed, Turret* turret);
+	void Initialise(MouseAndKeys* MKInput, Gamepads* GamePad, Model_Kami* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, Turret* turret);
 
 	void UpdateCamera(float dTime);
 
