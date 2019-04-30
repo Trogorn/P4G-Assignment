@@ -354,7 +354,7 @@ void Game::Render(float dTime)
 	//screen resolution
 	int sw, sh;
 	GetClientExtents(sw, sh);
-	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 10, 100.f);
+	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 0.1, 100.f);
 	Vector2 m = GetMouseAndKeys()->GetMouseMoveAndCentre();
 	if (m.x != 0 || m.y != 0)
 		mCamera.Rotate(dTime, m.x, m.y, 0);
