@@ -63,7 +63,7 @@ private:
 	//the camera matrix to modify
 	DirectX::SimpleMath::Matrix* mpViewSpaceTfm;
 	//movement and rotation speed
-	float speed = 10.f, rspeed = 1.f;
+	float speed = 10.f, rspeed = 0.044f;
 	//camera position
 	DirectX::SimpleMath::Vector3 mCamPos;
 	//camera rotation

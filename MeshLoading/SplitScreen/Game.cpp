@@ -48,7 +48,7 @@ void Game::Initialise()
 	mCamera.Funcy(mFlats);
 
 	mCamera.LockMovementAxis(Turret::UNLOCK, -9.5f, Turret::UNLOCK);
-	player.Initialise(GetMouseAndKeys(), &mCar, 5, 0.5f, 1, 1, 1, 1, 1, &mCamera);
+	player.Initialise(GetMouseAndKeys(), &mCar, 5, 0.5f, 1, 1, 1, 1, 1, &mCamera, &mFlats);
 
 }
 
@@ -61,12 +61,16 @@ void Game::Load()
 {
 	//ANY MODEL LOADING GOES HERE NOWHERE ELSE----------------------------------------------------------------
 
+	BuildQuad(*mMeshMg);
+	BuildCube(*mMeshMg);
 
 		// car setup
-	mCar.Initialise(BuildCube(*mMeshMg));
+	/*mCar.Initialise(BuildCube(*mMeshMg));
 	mCar.GetScale() = Vector3(0.05f, 0.05f, 0.1f);
-	mCar.GetPosition() = Vector3(0, 0.2f, 0);
-	mCar.GetRotation() = Vector3(0, 0, 0);
+	mCar.GetPosition() = Vector3(0, 0.05, 0);
+	mCar.GetRotation() = Vector3(0, 0, 0);*/
+	mCar.Initialise(mMeshMg->CreateMesh("car"));
+	mCar.GetMesh().CreateFrom("data/car/Lambo.FBX", gd3dDevice, FX::GetMyFX()->mCache);
 
 	mLoadData.loadedSoFar++;
 
@@ -74,7 +78,7 @@ void Game::Load()
 	mQuad1 = new Model();
 	mQuad2 = new Model();
 	//main floor
-	mQuad1->Initialise(BuildQuad(*mMeshMg));
+	mQuad1->Initialise(*mMeshMg->GetMesh("quad"));
 	MaterialExt mat = mQuad1->GetMesh().GetSubMesh(0).material;
 	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
 	mat.pTextureRV = mFX->mCache.LoadTexture("data/building1.dds", false, gd3dDevice);
@@ -367,7 +371,7 @@ void Game::Render(float dTime)
 
 	for (int i = 0; i < (int)mFlats.size(); ++i)
 	{
-		if (mFlats[i]->RetAlive())
+		if (mFlats[i]->GetAlive())
 			FX::GetMyFX()->Render(*mFlats[i], gd3dImmediateContext);
 		mFlats[i]->ColiderUpdate();
 	}
@@ -402,7 +406,7 @@ void Game::Render(float dTime)
 
 	for (int i = 0; i < (int)mFlats.size(); ++i)
 	{
-		if (mFlats[i]->RetAlive())
+		if (mFlats[i]->GetAlive())
 			FX::GetMyFX()->Render(*mFlats[i], gd3dImmediateContext);
 		mFlats[i]->ColiderUpdate();
 	}

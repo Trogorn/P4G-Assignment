@@ -54,17 +54,17 @@ public:
 
 
 
-	DirectX::BoundingOrientedBox& GetColider()
+	DirectX::BoundingOrientedBox& GetCollider()
 	{
-		return colider;
+		return collider;
 	}
 	void ColiderUpdate()
 	{
-		colider = DirectX::BoundingOrientedBox(mPosition, DirectX::XMFLOAT3(mScale.x, mScale.y, mScale.z), DirectX::XMFLOAT4(0, 0, mRotation.z, 1.f));
+		collider = DirectX::BoundingOrientedBox(mPosition, DirectX::XMFLOAT3(mScale.x, mScale.y, mScale.z), DirectX::XMFLOAT4(0, 0, mRotation.z, 1.f));
 	}
 
 	void Die() { alive = false; }
-	bool RetAlive() { return alive; }
+	bool GetAlive() { return alive; }
 
 
 
@@ -72,10 +72,10 @@ public:
 
 private:
 	bool alive = true;
-	DirectX::BoundingOrientedBox colider;
+	DirectX::BoundingOrientedBox collider;
 	Mesh *mpMesh = nullptr;
 	DirectX::SimpleMath::Vector3 mPosition{ 0, 0, 0 }, mScale{ 1, 1, 1 }, mRotation{ 0, 0, 0 };
-	DirectX::SimpleMath::Vector3 mOffset{ 0,0,0 };//used if the artists supplied models won't line up 
+	DirectX::SimpleMath::Vector3 mOffset{ 0,0,0 }; //used if the artists supplied models won't line up 
 	MaterialExt mOverrideMaterial;
 	bool mUseOverrideMat = false;
 };
