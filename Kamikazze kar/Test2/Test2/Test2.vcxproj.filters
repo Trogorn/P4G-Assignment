@@ -28,6 +28,9 @@
     <Filter Include="Util">
       <UniqueIdentifier>{e7837291-c230-4077-abff-352dec2e9f5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Pickups">
+      <UniqueIdentifier>{d380f6cc-2108-4fac-8f50-645960e6738c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D.cpp">
@@ -54,13 +57,7 @@
     <ClCompile Include="Shootable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Repair.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CollideInto.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AmmoPickup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
@@ -98,6 +95,15 @@
     </ClCompile>
     <ClCompile Include="GeometryBuilder.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoPickup.cpp">
+      <Filter>Source Files\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Repair.cpp">
+      <Filter>Source Files\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentBuilder.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="GeometryBuilder.h">
       <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentBuilder.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

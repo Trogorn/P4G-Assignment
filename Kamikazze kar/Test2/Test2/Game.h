@@ -29,6 +29,9 @@
 #include "Turret.h"
 #include "PlayerCar.h"
 
+//Environment
+#include "EnvironmentBuilder.h"
+
 //Util Stuff
 #include "MyDebug.h"
 
@@ -102,6 +105,8 @@ private:
 	Turret mCamera;
 
 	PlayerCar player;
+
+	EnvironmentBuilder BobTBuilder;
 
 
 };

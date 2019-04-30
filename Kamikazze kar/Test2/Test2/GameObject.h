@@ -47,4 +47,3 @@ private:
 	DirectX::BoundingBox box;
 
 };
-
