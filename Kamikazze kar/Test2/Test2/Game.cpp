@@ -71,6 +71,7 @@ void Game::Load()
 	*mQuad1->GetScale() = Vector3(3, 1, 3);
 	mQuad1->SetOverrideMat(&mat);
 
+	//BobTBuilder.BuildFloor();
 	mLoadData.loadedSoFar++;
 
 	//avoided floor
@@ -351,6 +352,7 @@ void Game::Render(float dTime)
 
 
 	//floor
+	//BobTBuilder.RenderEnvironment();
 	mFX.Render(*mQuad1, gd3dImmediateContext);
 	mFX.Render(*mQuad2, gd3dImmediateContext);
 	//mFX.Render(*mCube, gd3dImmediateContext); // Skyscraper
