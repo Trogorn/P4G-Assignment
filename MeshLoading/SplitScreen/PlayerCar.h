@@ -12,7 +12,7 @@ public:
 	//Convert these from constructors to initialise/setup function
 	PlayerCar();
 	~PlayerCar();
-	void Initialise(MouseAndKeys* MKInput, Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, Turret* turret);
+	void Initialise(MouseAndKeys* MKInput, Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, Turret* turret, const std::vector<Model*> * flats);
 
 	void UpdateCamera(float dTime);
 

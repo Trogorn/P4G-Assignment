@@ -23,7 +23,7 @@ public:
 
 	virtual void Update(float dTime) = 0;
 
-	virtual void OnCollide(const GameObject* apOther) = 0;
+	virtual void OnCollide(Model* Other) = 0;
 
 	Vector3 Getforward() { return forward; }
 
@@ -35,6 +35,8 @@ public:
 	Vector3* GetScale() const { return &mModel->GetScale(); }
 
 	Matrix GetWorldMatrix();
+
+	Model* GetModel() { return mModel; };
 
 protected:
 	//This may be changed in not too long

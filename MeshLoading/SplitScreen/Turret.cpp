@@ -12,8 +12,6 @@ void Turret::Initialise(const Vector3& pos, const DirectX::SimpleMath::Vector3& 
 	CreateViewMatrix(*mpViewSpaceTfm, pos, tgt, Vector3(0, 1, 0));
 	mCamPos = pos;
 	yaw = pitch = roll = 0;
-	
-
 }
 
 void Turret::SetPosition(Vector3 position)
@@ -24,8 +22,6 @@ void Turret::SetPosition(Vector3 position)
 	up = Vector3::TransformNormal(up, ori);
 	mCamPos = position;
 	CreateViewMatrix(*mpViewSpaceTfm, mCamPos, mCamPos + dir, up);
-
-
 	
 }
 
@@ -125,7 +121,7 @@ Model * Turret::Shoot()
 			{
 				float dummydistance(distance);
 
-				if (mpMyVec->at(i)->RetAlive() && ray.Intersects(mpMyVec->at(i)->GetColider(), _Out_ dummydistance) && dummydistance < shortestdistrance)
+				if (mpMyVec->at(i)->GetAlive() && ray.Intersects(mpMyVec->at(i)->GetCollider(), _Out_ dummydistance) && dummydistance < shortestdistrance)
 				{
 					shortestdistrance = dummydistance;
 					box = mpMyVec->at(i);

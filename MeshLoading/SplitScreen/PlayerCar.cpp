@@ -17,15 +17,15 @@ PlayerCar::PlayerCar() :Car()
 //Turning_Mod = How much the speed affects the turning radius of the car
 //Min_Turning_Speed = Minium Speed the car must be travelling in order to turn (usually 1)
 
-void PlayerCar::Initialise(MouseAndKeys* MKInput, Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, Turret* turret)
+void PlayerCar::Initialise(MouseAndKeys* MKInput, Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, Turret* turret, const std::vector<Model*> * flats)
 {
 	this->turret = turret;
 	this->MKInput = MKInput;
 	//this->GamePad = GamePad;
-	Car::Initialise(mModel, Acceleration_Const, Friction_Const, Mass, Braking_Const, Min_Radius, Turning_Mod, Min_Turning_Speed);
+	Car::Initialise(mModel, Acceleration_Const, Friction_Const, Mass, Braking_Const, Min_Radius, Turning_Mod, Min_Turning_Speed, flats);
 
 	CameraOffSetV = Vector3(0.f, 1.f, -2.f);
-	CameraOffSetD = 2.f;
+	CameraOffSetD = 1.f;
 	CameraDistance = Vector3(3.f, 4.f, 0.f);
 }
 
@@ -145,7 +145,7 @@ void PlayerCar::UpdateCamera(float dTime)
 
 	//turret->SetPosition( Vector3::Transform(Vector3(0,0.25f,0), GetWorldMatrix()) );
 
-	turret->SetPosition(Vector3(0, 0.15f, 0) + *GetPosition());
+	turret->SetPosition(Vector3(0, 1.1f, 0) * *GetScale() + *GetPosition());
 }
 
 void PlayerCar::Debug()

@@ -3,14 +3,15 @@
 #include "MyUtils.h"
 #include "MyDebug.h"
 #include <DirectXMath.h>
+#include "Model.h"
 
 using namespace DirectX::SimpleMath;
 class Car : public GameObject
 {
 public:
 	Car();
-	void Initialise(Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed);
-	void OnCollide(const GameObject* apOther);
+	void Initialise(Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, const std::vector<Model*> * flats);
+	void OnCollide(Model* apOther);
 	void Update(float dTime);
 	virtual ~Car();
 
@@ -27,6 +28,7 @@ protected:
 	float rotationAngle;
 
 	float speed;
+
 	
 private:
 
@@ -43,16 +45,22 @@ private:
 	float MIN_TURNING_SPEED;
 	float force;
 	float radius;
+	int health;
+	Model* Other = nullptr;
+
+	const std::vector<Model*> * pflats;
 
 	//void Update(float) overridden
 
 	void UpdateMovement(float dTime);
 
-	void UpdateGameObject(float dTime);
-
 	void UpdateHealth(int amount);
+
+	Model* HasCollided();
 
 	//Will be overridden by both playercar and rc car
 	virtual void UpdateControlVector() = 0;
+
+	DirectX::BoundingOrientedBox* Collider;
 };
 
