@@ -26,7 +26,7 @@ void PlayerCar::Initialise(MouseAndKeys* MKInput, Model* mModel, float Accelerat
 
 	CameraOffSetV = Vector3(0.f, 1.f, -2.f);
 	CameraOffSetD = 1.f;
-	CameraDistance = Vector3(3.f, 4.f, 0.f);
+	CameraDistance = Vector3(2.f, 2.f, 0.f);
 }
 
 
@@ -143,9 +143,9 @@ void PlayerCar::UpdateCamera(float dTime)
 	*camera.GetCameraPosition() = Vector3::Transform(cameraPosL, L2W);
 
 
-	//turret->SetPosition( Vector3::Transform(Vector3(0,0.25f,0), GetWorldMatrix()) );
+	turret->SetPosition( Vector3::Transform(Vector3(0, 0.6f,-1.f), GetWorldMatrix()) );
 
-	turret->SetPosition(Vector3(0, 1.1f, 0) * *GetScale() + *GetPosition());
+	//turret->SetPosition(Vector3(0, 0.75f, -1.f));
 }
 
 void PlayerCar::Debug()

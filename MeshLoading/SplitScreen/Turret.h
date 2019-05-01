@@ -5,6 +5,7 @@
 #include "D3D.h"
 #include "D3DUtil.h"
 #include "Model.h"
+#include "FX.h"
 class Turret
 {
 public:
@@ -45,7 +46,10 @@ public:
 	{
 		return (cooldown <= maxCooldown - 0.1f);
 	}
+	
 
+	void Renderfirst(Model* turret, Model* laser);
+	void Renderthird(Model* turret, Model* laser);
 	
 private:
 	
