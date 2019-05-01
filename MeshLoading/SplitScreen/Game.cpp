@@ -71,6 +71,9 @@ void Game::Load()
 	mCar.GetRotation() = Vector3(0, 0, 0);*/
 	mCar.Initialise(mMeshMg->CreateMesh("car"));
 	mCar.GetMesh().CreateFrom("data/car/Lambo.FBX", gd3dDevice, FX::GetMyFX()->mCache);
+	mCar.GetScale() = Vector3(0.05f, 0.05f, 0.05f);
+	mCar.GetPosition() = Vector3(0, 0.05, 0);
+
 
 	mLoadData.loadedSoFar++;
 
@@ -246,7 +249,7 @@ void Game::Load()
 	tm.CreateFrom("data/Turret.fbx", gd3dDevice, FX::GetMyFX()->mCache);
 	thrdmGun.Initialise(tm);
 	//mGun = mBox;
-	thrdmGun.GetScale() = Vector3(0.01, 0.01, 0.01);
+	thrdmGun.GetScale() = Vector3(0.005, 0.005, 0.005);
 	thrdmGun.GetPosition() = Vector3(0, 0, 0);
 	thrdmGun.GetRotation() = Vector3(0, XMConvertToRadians(180), 0);
 
@@ -266,7 +269,7 @@ void Game::Load()
 	mLaz.Initialise(lm);
 
 	mLaz.GetScale() = Vector3(0.003, 0.003, 1);
-	mLaz.GetPosition() = Vector3(0, 0.03f, 0);
+	mLaz.GetPosition() = Vector3(0, 0.016f, 0);
 	mLaz.GetRotation() = Vector3(0, XMConvertToRadians(180), 0);
 
 	mFLaz = mLaz;
@@ -357,14 +360,23 @@ void Game::Render(float dTime)
 
 	//screen resolution
 	int sw, sh;
+
 	GetClientExtents(sw, sh);
-	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 0.1, 100.f);
+
+	//FIRST PERSON======================================================================================================================================
+	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, sw / (sh*0.5f), 0.01f, 100.f);
+
 	Vector2 m = GetMouseAndKeys()->GetMouseMoveAndCentre();
+
 	if (m.x != 0 || m.y != 0)
 		mCamera.Rotate(dTime, m.x, m.y, 0);
+
 	FX::GetViewMatrix() = gViewMat1;
+
 	SetViewportDimensions(gd3dImmediateContext, 0, 0, sw, sh/2, gScreenViewport);
 	FX::SetPerFrameConsts(gd3dImmediateContext, mCamera.GetPos());
+
+	// Render Skybox
 	mSkybox.GetPosition() = mCamera.GetPos();
 	FX::GetMyFX()->Render(mSkybox, gd3dImmediateContext);
 
@@ -380,59 +392,42 @@ void Game::Render(float dTime)
 	FX::GetMyFX()->Render(*mQuad2, gd3dImmediateContext);
 	//mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 	//mpSpriteBatch->Draw(FX::GetMyFX() ->mCache.LoadTexture("test.dds", true, gd3dDevice), Vector2(sw / 2, sh / 4), nullptr, Colours::White, 0, Vector2(0, 0), Vector2(0.01f, 0.01f));
-	//for (Model*p : mOpaques)
-		//FX::GetMyFX()->Render(*p, gd3dImmediateContext);
 
 
-
-	Matrix gm;
-	fstmGun.GetWorldMatrix(gm);
-	Matrix cam = mCamera.GetMatrix().Invert();
-	gm = gm * cam;
-	FX::GetMyFX()->Render(fstmGun, gd3dImmediateContext, nullptr, &gm);
-	
-	Matrix dm;
-	mFLaz.GetWorldMatrix(dm);
-	dm = dm * cam;
-	
-	if (!mCamera.CanFire())
-		FX::GetMyFX()->Render(mFLaz, gd3dImmediateContext, nullptr, &dm);
-
+	//Render turret view
+	mCamera.Renderfirst(&fstmGun, &mFLaz);
+	//Render the car into first person
 	player.Render(FX::GetMyFX());
 	
+	//Switch to third person camera
 	player.GetCamera()->Render(FX::GetMyFX(), *player.GetPosition());
-	FX::GetMyFX()->Render(mSkybox, gd3dImmediateContext);
-	player.Render(FX::GetMyFX());
 
+	//THIRD PERSON======================================================================================================================================
+
+	// render skybox
+	FX::GetMyFX()->Render(mSkybox, gd3dImmediateContext);
+	
 	for (int i = 0; i < (int)mFlats.size(); ++i)
 	{
 		if (mFlats[i]->GetAlive())
 			FX::GetMyFX()->Render(*mFlats[i], gd3dImmediateContext);
 		mFlats[i]->ColiderUpdate();
 	}
+
 	FX::GetMyFX()->Render(*mQuad1, gd3dImmediateContext);
 	FX::GetMyFX()->Render(*mQuad2, gd3dImmediateContext);
 
+	//render the third person turret
+	mCamera.Renderthird(&thrdmGun, &mFLaz);
 
-
-	Matrix cm;
-	thrdmGun.GetWorldMatrix(cm);
-	cm = cm * cam;
-	FX::GetMyFX()->Render(thrdmGun, gd3dImmediateContext, nullptr, &cm);
-
-
-	mLaz.GetWorldMatrix(dm);
-	dm = dm * cam;
-	if(!mCamera.CanFire())
-		FX::GetMyFX()->Render(mLaz, gd3dImmediateContext, nullptr, &dm);
-
-	//mLaz.GetPosition() = mCamera.GetPos();
+	//Render the car in third person
+	player.Render(FX::GetMyFX());
 	
 
 
 	EndRender();
 
-//	GetMouseAndKeys()->PostProcess();
+	//GetMouseAndKeys()->PostProcess();
 }
 
 LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

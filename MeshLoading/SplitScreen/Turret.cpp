@@ -147,3 +147,38 @@ Model * Turret::Shoot()
 	
 	return box;
 }
+
+//Render first person turret
+void Turret::Renderfirst(Model* turret, Model* laser)
+{
+	Matrix gm;
+	turret->GetWorldMatrix(gm);
+	Matrix cam = GetMatrix().Invert();
+	gm = gm * cam;
+	FX::GetMyFX()->Render(*turret, gd3dImmediateContext, nullptr, &gm);
+
+	Matrix dm;
+	laser->GetWorldMatrix(dm);
+	dm = dm * cam;
+
+	if (!CanFire())
+		FX::GetMyFX()->Render(*laser, gd3dImmediateContext, nullptr, &dm);
+}
+
+//render third person Turret
+void Turret::Renderthird(Model* turret, Model* laser)
+{
+	Matrix cm;
+	turret->GetWorldMatrix(cm);
+	Matrix cam = GetMatrix().Invert();
+	cm = cm * cam;
+	FX::GetMyFX()->Render(*turret, gd3dImmediateContext, nullptr, &cm);
+
+	Matrix dm;
+	laser->GetWorldMatrix(dm);
+
+	dm = dm * cam;
+
+	if (!CanFire())
+		FX::GetMyFX()->Render(*laser, gd3dImmediateContext, nullptr, &dm);
+}

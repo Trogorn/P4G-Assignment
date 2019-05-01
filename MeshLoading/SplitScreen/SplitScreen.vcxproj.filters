@@ -229,4 +229,9 @@
       <Filter>FX</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\data\car\Lambo.fbx">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
