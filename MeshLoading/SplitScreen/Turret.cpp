@@ -102,7 +102,7 @@ void Turret::Rotate(float dTime, float _yaw, float _pitch, float _roll)
 
 
 
-Model * Turret::Shoot()
+void Turret::Shoot()
 {
 	Model* box = nullptr;
 	if (cooldown <= 0)
@@ -144,8 +144,6 @@ Model * Turret::Shoot()
 		cooldown =  maxCooldown;
 		
 	}
-	
-	return box;
 }
 
 //Render first person turret

@@ -26,7 +26,7 @@ public:
 	const DirectX::SimpleMath::Vector3& GetPos() {
 		return mCamPos;
 	}
-	Model* Shoot();
+	void Shoot();
 
 	DirectX::SimpleMath::Vector3 GetShort();
 

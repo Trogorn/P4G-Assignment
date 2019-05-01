@@ -26,7 +26,7 @@ public:
 
 private:
 	//Camera Offset unit Vector
-	Vector3 CameraOffSetV;
+	Vector3 CameraOffSetV, CameraOffSetVDefault;
 	//Length of Camera Offset Vector
 	float CameraOffSetD;
 	//Allowed distance from offset

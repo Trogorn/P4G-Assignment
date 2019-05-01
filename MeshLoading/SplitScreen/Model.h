@@ -14,7 +14,7 @@ class Mesh;
 class Model
 {
 public:
-	void Initialise(Mesh &mesh);
+	void Initialise(Mesh &mesh, bool terrain = 0);
 	
 	DirectX::SimpleMath::Vector3& GetPosition() { return mPosition; }
 	DirectX::SimpleMath::Vector3& GetScale() { return mScale; }
@@ -63,14 +63,16 @@ public:
 		collider = DirectX::BoundingOrientedBox(mPosition, DirectX::XMFLOAT3(mScale.x, mScale.y, mScale.z), DirectX::XMFLOAT4(0, 0, mRotation.z, 1.f));
 	}
 
-	void Die() { alive = false; }
+	void Die() { if(!terrain)alive = false; }
 	bool GetAlive() { return alive; }
+	bool GetTerrain() { return terrain; };
 
 
 
 
 
 private:
+	bool terrain;
 	bool alive = true;
 	DirectX::BoundingOrientedBox collider;
 	Mesh *mpMesh = nullptr;

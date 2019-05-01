@@ -7,12 +7,13 @@ using namespace DirectX::SimpleMath;
 
 
 
-void Model::Initialise(Mesh &mesh)
+void Model::Initialise(Mesh &mesh, bool terrain)
 {
 	mpMesh = &mesh;
 	mPosition = Vector3(0, 0, 0);
 	mScale = Vector3(1, 1, 1);
 	mRotation = Vector3(0, 0, 0);
+	this->terrain = terrain;
 }
 
 void Model::GetWorldMatrix(DirectX::SimpleMath::Matrix& w)

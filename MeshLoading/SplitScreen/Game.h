@@ -15,6 +15,9 @@
 //#include "Input.h"
 #include "MyDebug.h"
 #include "SpriteFont.h"
+
+
+
 class Game
 {
 public:
@@ -37,6 +40,7 @@ public:
 	MeshManager* mMeshMg;
 	FX::MyFX* mFX;
 
+	void LoadMap();
 
 
 private:
@@ -47,6 +51,8 @@ private:
 	std::vector<Model*> mOpaques;
 	Turret mCamera;
 	PlayerCar player;
+
+	float timer;
 	//MouseAndKeys mMKInput;
 	//Gamepads mGamepad;
 
@@ -72,9 +78,20 @@ private:
 		//is the loader active
 		bool running = false;
 	};
+
 	LoadData mLoadData;
 
 	Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid);
+
+	enum class State
+	{
+		MENU,
+		PLAYING,
+		ENDSCREEN
+	};
+	State gameState;
+
+
 };
 
 #endif
