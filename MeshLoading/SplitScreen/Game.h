@@ -36,7 +36,7 @@ public:
 	void Release();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	std::vector<Model*> mFlats;
-	Model mBox, mQuad, mSkybox, thrdmGun, fstmGun, mCar, mLaz, mFLaz, * mCube, * mQuad1, * mQuad2;
+	Model mQuad, mSkybox, *ThirdTurret, *FirstTurret, * mCar, * mLaz, * mFLaz, * mCube, * Floor, * AvoidPlane;
 	MeshManager* mMeshMg;
 	FX::MyFX* mFX;
 
@@ -49,8 +49,8 @@ private:
 	float gAngle = 0;
 	//FPSCamera mCamera2;
 	std::vector<Model*> mOpaques;
-	Turret mCamera;
-	PlayerCar player;
+	Turret PlayerTurret;
+	PlayerCar PlayerDrive;
 
 	float timer;
 	//MouseAndKeys mMKInput;
@@ -58,7 +58,12 @@ private:
 
 	//load meshes
 	void Load();
+
+	void LoadLevel();
+
 	//display a message
+	void StartupDisplay(float dTime);
+
 	void LoadDisplay(float dTime);
 	//light position
 	DirectX::SimpleMath::Vector3 mLightPos = DirectX::SimpleMath::Vector3(0, 0, 0);
@@ -90,6 +95,8 @@ private:
 		ENDSCREEN
 	};
 	State gameState;
+
+
 
 
 };

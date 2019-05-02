@@ -153,7 +153,7 @@ void PlayerCar::UpdateCamera(float dTime)
 	*camera.GetCameraPosition() = Vector3::Transform(cameraPosL, L2W);
 
 
-	turret->SetPosition( Vector3::Transform(Vector3(0, 0.6f,-1.f), GetWorldMatrix()) );
+	turret->UpdatePosition( Vector3::Transform(Vector3(0, 0.6f,-1.f), GetWorldMatrix()) );
 
 	//turret->SetPosition(Vector3(0, 0.75f, -1.f));
 }
@@ -185,8 +185,19 @@ void PlayerCar::Debug()
 	MyDebug::Message(ss);
 }
 
-void PlayerCar::Render(FX::MyFX* fx)
+void PlayerCar::Render()
 {
-	GameObject::Render(fx);
+	GameObject::Render();
 	//camera.Render(fx, *GetPosition());
+}
+
+void PlayerCar::MenuUpdate(float dTime)
+{
+	*GetRotation() = Vector3(0, GetRotation()->y + dTime, 0);
+	turret->UpdatePosition(Vector3::Transform(Vector3(0, 0.6f, -1.f), GetWorldMatrix()));
+}
+
+void PlayerCar::Reset()
+{
+	*GetRotation() = Vector3(0, 0, 0);
 }

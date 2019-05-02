@@ -18,9 +18,13 @@ public:
 
 	void UpdateControlVector();
 
+	void MenuUpdate(float dTime);
+
+	void Reset();
+
 	void Debug();
 
-	void Render(FX::MyFX* fx);
+	void Render();
 
 	Camera* GetCamera() { return &camera; }
 

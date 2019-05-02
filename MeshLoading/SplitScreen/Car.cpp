@@ -49,7 +49,7 @@ void Car::OnCollide(Model* Other, float dTime)
 	else
 	{
 		Vector3 Pos;
-		if (speed < 0)
+		if (speed > 0)
 		{
 			Pos = Vector3(0, 0, (-speed + 1)*dTime);
 		}
@@ -117,13 +117,17 @@ float wheel = control.x;
 //If Turning
 if (wheel != 0)
 {
-	if (speed > MIN_TURNING_SPEED || speed < -MIN_TURNING_SPEED)
+	if (speed >= MIN_TURNING_SPEED || speed <= -MIN_TURNING_SPEED)
 	{
-		if (speed < -MIN_TURNING_SPEED*4)
+		if (speed <= -MIN_TURNING_SPEED)
 		{
 			wheel *= -1;
+			radius = (-MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
 		}
-		radius = (MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
+		else
+		{
+			radius = (MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
+		}
 		float CarAngle, radiusAngle, deltaAngle, newAngle;
 		Vector3 CarPos = Vector3::Zero;
 		Vector3 NewPos = Vector3::Zero;
@@ -137,7 +141,7 @@ if (wheel != 0)
 			radiusAngle = (CarAngle)* MyUtils::Rad2Deg;
 
 			//Calculate Angle car travels through
-			deltaAngle = ((speed / (PI * (2 * radius)) * 360) * dTime) * GetScale()->x;
+			deltaAngle = (( speed / (2*PI * radius))*360 * dTime) * GetScale()->x;
 
 			//Calculate Angle Car should be at after turning
 			newAngle = radiusAngle + deltaAngle;
@@ -153,25 +157,18 @@ if (wheel != 0)
 			radiusAngle = CarAngle * MyUtils::Rad2Deg;
 
 			//Calculate Angle car travels through
-			deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime * GetScale()->x;
+			deltaAngle = ((speed / (2 * PI * radius)) * 360 * dTime) * GetScale()->x;
 
 			//Calculate Angle Car should be at after turning
 			newAngle = radiusAngle + deltaAngle;
 
 		}
 
-		MyDebug::Message(deltaAngle);
-		MyDebug::Message(newAngle);
-
-
 		//Pos Relative to centre Pos
 
 		CarPos.x = radius * -cos(radiusAngle * MyUtils::Deg2Rad);
 		CarPos.z = radius * sin(radiusAngle * MyUtils::Deg2Rad);
 		CarPos.y = GetPosition()->y;
-
-		MyDebug::Message("Radius Angle: " + std::to_string(radiusAngle));
-		MyDebug::Message("CarPos X: " + std::to_string(CarPos.x));
 
 		//Calculate Centre Position
 		Vector3 centrePos = Vector3::Zero;

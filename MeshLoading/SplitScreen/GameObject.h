@@ -19,7 +19,7 @@ public:
 	// Or moved so that its called in Update (Lochlann)
 	virtual void Move();
 
-	virtual void Render(FX::MyFX* fx);
+	virtual void Render();
 
 	virtual void Update(float dTime) = 0;
 

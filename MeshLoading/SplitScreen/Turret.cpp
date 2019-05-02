@@ -5,8 +5,14 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 
-void Turret::Initialise(const Vector3& pos, const DirectX::SimpleMath::Vector3& tgt, Matrix& viewSpaceTfm)
+void Turret::Initialise(Model *FirstTurret, Model *ThirdTurret, Model *FirstLaser, Model *ThirdLaser, const Vector3& pos, const DirectX::SimpleMath::Vector3& tgt, Matrix& viewSpaceTfm)
 {
+	// Get Models
+	this->FirstTurret = FirstTurret;
+	this->ThirdTurret = ThirdTurret;
+	this->Firstlaser = FirstLaser;
+	this->Thirdlaser = ThirdLaser;
+
 	//standard camera setup
 	mpViewSpaceTfm = &viewSpaceTfm;
 	CreateViewMatrix(*mpViewSpaceTfm, pos, tgt, Vector3(0, 1, 0));
@@ -14,7 +20,7 @@ void Turret::Initialise(const Vector3& pos, const DirectX::SimpleMath::Vector3& 
 	yaw = pitch = roll = 0;
 }
 
-void Turret::SetPosition(Vector3 position)
+void Turret::UpdatePosition(Vector3 position)
 {
 	Matrix ori = Matrix::CreateFromYawPitchRoll(yaw, pitch, roll);
 	Vector3 dir(0, 0, 1), up(0, 1, 0);
@@ -27,56 +33,23 @@ void Turret::SetPosition(Vector3 position)
 
 void Turret::Update(float dTime)
 {
+
+	Rotate(dTime);
+
 	if (cooldown > 0)
 		cooldown -= dTime;
 }
 
-void Turret::Move(float dTime, bool forward, bool back, bool left, bool right)
+
+void Turret::MenuUpdate(float dTime)
 {
-	//if we didn't move then nothing to do
-	if (!forward && !back && !left && !right)
-		return;
-
-	//assuming we are sat at the origin looking straight down Z
-	//yaw=rotating around Y, pitch=rotating around X, roll=rotate around Z
-	Matrix ori = Matrix::CreateFromYawPitchRoll(yaw, pitch, roll);
-	//figure out forwards and up from the new matrix
-	Vector3 dir(0, 0, 1), up(0, 1, 0);
-	dir = Vector3::TransformNormal(dir, ori);
-	up = Vector3::TransformNormal(up, ori);
-	//side to side motion must be orthogonal to forwards and up, so a cross product is perfect
-	Vector3 strafe = dir.Cross(up);
-
-	//moving the camera
-	Vector3 pos(mCamPos);
-	if (forward)
-		pos += dir * dTime* speed;
-	else if (back)
-		pos += -dir * dTime * speed;
-	if (left)
-		pos += strafe * dTime * speed;
-	else if (right)
-		pos -= strafe * dTime * speed;
-
-	//the camera might be fixed in certain axes e.g. to keep you on the floor
-	if (mLockAxis.x != UNLOCK)
-		pos.x = mLockAxis.x;
-	if (mLockAxis.y != UNLOCK)
-		pos.y = mLockAxis.y;
-	if (mLockAxis.z != UNLOCK)
-		pos.z = mLockAxis.z;
-
-	//build the camera in its new position
-	CreateViewMatrix(*mpViewSpaceTfm, pos, pos + dir, up);
-	mCamPos = pos;
+	ThirdTurret->GetRotation() = Vector3(0, ThirdTurret->GetRotation().y + dTime, 0);
 }
 
-Vector3 Turret::GetRot()
+void Turret::Reset()
 {
-	return Vector3(pitch, yaw, roll);
+	ThirdTurret->GetRotation() = Vector3(0, 180 * MyUtils::Deg2Rad , 0);
 }
-
-
 
 Vector3 Turret::GetShort()
 {
@@ -86,21 +59,27 @@ Vector3 Turret::GetShort()
 	return mCamPos + dir * shortestdistrance;
 }
 
-void Turret::Rotate(float dTime, float _yaw, float _pitch, float _roll)
+void Turret::Rotate(float dTime)
 {
-	yaw += _yaw * dTime * rspeed;
-	pitch += _pitch * dTime * rspeed;
-	roll += _roll * dTime * rspeed;
-	Matrix ori;
-	ori = Matrix::CreateFromYawPitchRoll(yaw, pitch, roll);
-	Vector3 dir(0, 0, 1), up(0, 1, 0);
-	dir = Vector3::TransformNormal(dir, ori);
-	up = Vector3::TransformNormal(up, ori);
-	CreateViewMatrix(*mpViewSpaceTfm, mCamPos, mCamPos + dir, up);
+	Vector2 m;
+	m = GetMouseAndKeys()->GetMouseMoveAndCentre();
+
+	if (m.x != 0 || m.y != 0)
+	{
+		float _yaw = m.x;
+		float _pitch = m.y;
+		float _roll = 0;
+		yaw += _yaw * dTime * rspeed;
+		pitch += _pitch * dTime * rspeed;
+		roll += _roll * dTime * rspeed;
+		Matrix ori;
+		ori = Matrix::CreateFromYawPitchRoll(yaw, pitch, roll);
+		Vector3 dir(0, 0, 1), up(0, 1, 0);
+		dir = Vector3::TransformNormal(dir, ori);
+		up = Vector3::TransformNormal(up, ori);
+		CreateViewMatrix(*mpViewSpaceTfm, mCamPos, mCamPos + dir, up);
+	}
 }
-
-
-
 
 void Turret::Shoot()
 {
@@ -127,8 +106,6 @@ void Turret::Shoot()
 					box = mpMyVec->at(i);
 					hit = true;
 				}
-
-
 			}
 
 		if (hit)
@@ -138,45 +115,61 @@ void Turret::Shoot()
 			//Damage linked reference in box if it has one
 		}
 		else
+		{
 			hitPosition = Vector3(0, 0, 0);
-
-
+		}
 		cooldown =  maxCooldown;
 		
 	}
 }
 
 //Render first person turret
-void Turret::Renderfirst(Model* turret, Model* laser)
+void Turret::Renderfirst()
 {
-	Matrix gm;
-	turret->GetWorldMatrix(gm);
-	Matrix cam = GetMatrix().Invert();
-	gm = gm * cam;
-	FX::GetMyFX()->Render(*turret, gd3dImmediateContext, nullptr, &gm);
+	Matrix TurretMatrix;
 
-	Matrix dm;
-	laser->GetWorldMatrix(dm);
-	dm = dm * cam;
+	FirstTurret->GetWorldMatrix(TurretMatrix);
+
+	Matrix cameraMatrixInverse = GetMatrix().Invert();
+
+	TurretMatrix = TurretMatrix * cameraMatrixInverse;
+
+	FX::GetMyFX()->Render(*FirstTurret, gd3dImmediateContext, nullptr, &TurretMatrix);
+
+	Matrix LaserMatrix;
+
+	Firstlaser->GetWorldMatrix(LaserMatrix);
+
+	LaserMatrix = LaserMatrix * cameraMatrixInverse;
 
 	if (!CanFire())
-		FX::GetMyFX()->Render(*laser, gd3dImmediateContext, nullptr, &dm);
+		FX::GetMyFX()->Render(*Firstlaser, gd3dImmediateContext, nullptr, &LaserMatrix);
 }
 
 //render third person Turret
-void Turret::Renderthird(Model* turret, Model* laser)
+void Turret::Renderthird()
 {
-	Matrix cm;
-	turret->GetWorldMatrix(cm);
-	Matrix cam = GetMatrix().Invert();
-	cm = cm * cam;
-	FX::GetMyFX()->Render(*turret, gd3dImmediateContext, nullptr, &cm);
+	Matrix TurretMatrix;
 
-	Matrix dm;
-	laser->GetWorldMatrix(dm);
+	ThirdTurret->GetWorldMatrix(TurretMatrix);
 
-	dm = dm * cam;
+	Matrix cameraMatrixInverse = GetMatrix().Invert();
+
+	TurretMatrix = TurretMatrix * cameraMatrixInverse;
+
+
+	FX::GetMyFX()->Render(*ThirdTurret, gd3dImmediateContext, nullptr, &TurretMatrix);
+
+	Matrix LaserMatrix;
+	Thirdlaser->GetWorldMatrix(LaserMatrix);
+
+	LaserMatrix = LaserMatrix * cameraMatrixInverse;
 
 	if (!CanFire())
-		FX::GetMyFX()->Render(*laser, gd3dImmediateContext, nullptr, &dm);
+		FX::GetMyFX()->Render(*Thirdlaser, gd3dImmediateContext, nullptr, &LaserMatrix);
+}
+
+void Turret::OnCollide(Model* Other, float dTime)
+{
+	return;
 }

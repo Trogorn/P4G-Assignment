@@ -6,19 +6,29 @@
 #include "D3DUtil.h"
 #include "Model.h"
 #include "FX.h"
-class Turret
+#include "Input.h"
+#include "GameObject.h"
+#include "MyUtils.h"
+
+class Turret : public GameObject
 {
 public:
 	enum { UNLOCK = 999999 };
 
 	
-	void Initialise(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& tgt, DirectX::SimpleMath::Matrix& viewSpaceTfm);
-	void Update(float dTime);
-	void SetPosition(DirectX::SimpleMath::Vector3);
+	void Initialise(Model *FirstTurret, Model *ThirdTurret, Model *FirstLaser, Model *ThirdLaser, const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& tgt, DirectX::SimpleMath::Matrix& viewSpaceTfm);
 
-	void Move(float dTime, bool forward, bool back, bool left, bool right);
+	void OnCollide(Model* Other, float dTime);
+
+	void Update(float dTime);
+	void MenuUpdate(float dTime);
+	void Reset();
+
+	void UpdatePosition(DirectX::SimpleMath::Vector3);
+
 	
-	void Rotate(float dTime, float _yaw, float _pitch, float _roll);
+	void Rotate(float dTime);
+
 	//stop camera moving in a certain axis, e.g. a FPS camera that always stays a fixed height in Y
 	void LockMovementAxis(float x = UNLOCK, float y = UNLOCK, float z = UNLOCK) {
 		mLockAxis = DirectX::SimpleMath::Vector3(x, y, z);
@@ -29,8 +39,6 @@ public:
 	void Shoot();
 
 	DirectX::SimpleMath::Vector3 GetShort();
-
-	DirectX::SimpleMath::Vector3 GetRot();
 
 	void Funcy(std::vector<Model*>& myvec)
 	{
@@ -48,8 +56,8 @@ public:
 	}
 	
 
-	void Renderfirst(Model* turret, Model* laser);
-	void Renderthird(Model* turret, Model* laser);
+	void Renderfirst();
+	void Renderthird();
 	
 private:
 	
@@ -72,5 +80,6 @@ private:
 	DirectX::SimpleMath::Vector3 mCamPos;
 	//camera rotation
 	float yaw = 0, pitch = 0, roll = 0;
-};
 
+	Model *FirstTurret, *ThirdTurret, *Firstlaser, *Thirdlaser;
+};
