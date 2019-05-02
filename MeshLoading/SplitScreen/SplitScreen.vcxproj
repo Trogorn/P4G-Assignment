@@ -152,6 +152,7 @@
     <ClInclude Include="ShaderTypes.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SpriteAnim.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Turret.h" />
     <ClInclude Include="UserFolder.h" />
     <ClInclude Include="UtilsDefines.h" />

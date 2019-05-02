@@ -24,7 +24,8 @@ void PlayerCar::Initialise(MouseAndKeys* MKInput, Model* mModel, float Accelerat
 	//this->GamePad = GamePad;
 	Car::Initialise(mModel, Acceleration_Const, Friction_Const, Mass, Braking_Const, Min_Radius, Turning_Mod, Min_Turning_Speed, flats);
 
-	CameraOffSetV = Vector3(0.f, 1.f, -2.f);
+	CameraOffSetVDefault = Vector3(0.f, 1.f, -2.f);
+	CameraOffSetV = CameraOffSetVDefault;
 	CameraOffSetD = 1.f;
 	CameraDistance = Vector3(2.f, 2.f, 0.f);
 }
@@ -39,37 +40,37 @@ PlayerCar::~PlayerCar()
 void PlayerCar::UpdateControlVector()
 {
 	if (MKInput->IsPressed(VK_W) && MKInput->IsPressed(VK_S))
-		controlVector.y = 0;
+		control.y = 0;
 	else
 	{
 		if (MKInput->IsPressed(VK_W))
 		{
-			controlVector.y = 1;
+			control.y = 1;
 		}
 		else
 		{
 			if (MKInput->IsPressed(VK_S))
 			{
-				controlVector.y = -1;
+				control.y = -1;
 			}
 			else
 			{
-				controlVector.y = 0;
+				control.y = 0;
 			}
 		}
 	}
 	if (MKInput->IsPressed(VK_A) && MKInput->IsPressed(VK_D))
-		controlVector.x = 0;
+		control.x = 0;
 	else
 	{
 		if (MKInput->IsPressed(VK_A))
-			controlVector.x = -1;
+			control.x = -1;
 		else
 		{
 			if (MKInput->IsPressed(VK_D))
-				controlVector.x = 1;
+				control.x = 1;
 			else
-				controlVector.x = 0;
+				control.x = 0;
 		}
 	}
 	if (MKInput->IsPressed(VK_SPACE))
@@ -83,6 +84,15 @@ void PlayerCar::UpdateControlVector()
 // Look into this
 void PlayerCar::UpdateCamera(float dTime)
 {
+
+	if (speed < 0)
+	{
+		CameraOffSetV.z = CameraOffSetVDefault.z * -1;
+	}
+	else
+	{
+		CameraOffSetV.z = CameraOffSetVDefault.z;
+	}
 	//Model has a world matrix meaning I can work with local space and then convert it into world coordinates later
 
 	// Local to World
@@ -143,7 +153,7 @@ void PlayerCar::UpdateCamera(float dTime)
 	*camera.GetCameraPosition() = Vector3::Transform(cameraPosL, L2W);
 
 
-	turret->SetPosition( Vector3::Transform(Vector3(0, 0.6f,-1.f), GetWorldMatrix()) );
+	turret->UpdatePosition( Vector3::Transform(Vector3(0, 0.6f,-1.f), GetWorldMatrix()) );
 
 	//turret->SetPosition(Vector3(0, 0.75f, -1.f));
 }
@@ -175,8 +185,19 @@ void PlayerCar::Debug()
 	MyDebug::Message(ss);
 }
 
-void PlayerCar::Render(FX::MyFX* fx)
+void PlayerCar::Render()
 {
-	GameObject::Render(fx);
+	GameObject::Render();
 	//camera.Render(fx, *GetPosition());
+}
+
+void PlayerCar::MenuUpdate(float dTime)
+{
+	*GetRotation() = Vector3(0, GetRotation()->y + dTime, 0);
+	turret->UpdatePosition(Vector3::Transform(Vector3(0, 0.6f, -1.f), GetWorldMatrix()));
+}
+
+void PlayerCar::Reset()
+{
+	*GetRotation() = Vector3(0, 0, 0);
 }

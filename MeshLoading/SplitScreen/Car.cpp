@@ -33,16 +33,33 @@ void Car::Update(float dTime)
 	Other = HasCollided();
 	if (Other != nullptr)
 	{
-		OnCollide(Other);
+		OnCollide(Other, dTime);
 	}
 }
 
-void Car::OnCollide(Model* Other)
+void Car::OnCollide(Model* Other, float dTime)
 {
-	Other->Die();
-	speed *= 0.25;
-	UpdateHealth(-1);
-	Other = nullptr;
+	if (!Other->GetTerrain())
+	{
+		Other->Die();
+		speed *= 0.25;
+		UpdateHealth(-1);
+		Other = nullptr;
+	}
+	else
+	{
+		Vector3 Pos;
+		if (speed > 0)
+		{
+			Pos = Vector3(0, 0, (-speed + 1)*dTime);
+		}
+		else
+		{
+			Pos = Vector3(0, 0, (-speed - 1)*dTime);
+		}
+		speed *= -0.5;
+		*GetPosition() = Vector3::Transform(Pos,GetWorldMatrix());
+	}
 }
 
 void Car::UpdateControlVector()
@@ -57,9 +74,25 @@ void Car::UpdateControlVector()
 
 void Car::UpdateMovement(float dTime)
 {
+	if (!OnRoad)
+	{
+		Vector3 Pos;
+		if (speed < 0)
+		{
+			 Pos = Vector3(0, 0, (-speed + 1)*dTime);
+		}
+		else
+		{
+			Pos = Vector3(0, 0, (-speed - 1)*dTime);
+		}
+
+		speed *= -0.5;
+		*GetPosition() = Vector3::Transform(Pos, GetWorldMatrix());
+		OnRoad = true;
+	}
 	//Acceleration and Braking
 	//========================================================================
-	float throttle = controlVector.y;
+	float throttle = control.y;
 	if (!(throttle < 0))
 	{
 		//If not braking
@@ -75,18 +108,26 @@ void Car::UpdateMovement(float dTime)
 	
 	float acceleration = force / MASS;
 	speed += acceleration * dTime;
-	MyDebug::Message(speed);
+	MyDebug::Message("Speed: " + std::to_string(speed));
 	//=====================================================================
 
 	//Turning Mechanics
 	//=======================================================================
-float wheel = controlVector.x;
+float wheel = control.x;
 //If Turning
 if (wheel != 0)
 {
-	if (speed > MIN_TURNING_SPEED)
+	if (speed >= MIN_TURNING_SPEED || speed <= -MIN_TURNING_SPEED)
 	{
-		radius = (MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
+		if (speed <= -MIN_TURNING_SPEED)
+		{
+			wheel *= -1;
+			radius = (-MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
+		}
+		else
+		{
+			radius = (MIN_RADIUS + (speed * TURNING_MOD)) * GetScale()->x;
+		}
 		float CarAngle, radiusAngle, deltaAngle, newAngle;
 		Vector3 CarPos = Vector3::Zero;
 		Vector3 NewPos = Vector3::Zero;
@@ -100,7 +141,7 @@ if (wheel != 0)
 			radiusAngle = (CarAngle)* MyUtils::Rad2Deg;
 
 			//Calculate Angle car travels through
-			deltaAngle = ((speed / (PI * (2 * radius)) * 360) * dTime) * GetScale()->x;
+			deltaAngle = (( speed / (2*PI * radius))*360 * dTime) * GetScale()->x;
 
 			//Calculate Angle Car should be at after turning
 			newAngle = radiusAngle + deltaAngle;
@@ -116,25 +157,18 @@ if (wheel != 0)
 			radiusAngle = CarAngle * MyUtils::Rad2Deg;
 
 			//Calculate Angle car travels through
-			deltaAngle = (speed / (PI * (2 * radius)) * 360) * dTime * GetScale()->x;
+			deltaAngle = ((speed / (2 * PI * radius)) * 360 * dTime) * GetScale()->x;
 
 			//Calculate Angle Car should be at after turning
 			newAngle = radiusAngle + deltaAngle;
 
 		}
 
-		MyDebug::Message(deltaAngle);
-		MyDebug::Message(newAngle);
-
-
 		//Pos Relative to centre Pos
 
 		CarPos.x = radius * -cos(radiusAngle * MyUtils::Deg2Rad);
 		CarPos.z = radius * sin(radiusAngle * MyUtils::Deg2Rad);
 		CarPos.y = GetPosition()->y;
-
-		MyDebug::Message("Radius Angle: " + std::to_string(radiusAngle));
-		MyDebug::Message("CarPos X: " + std::to_string(CarPos.x));
 
 		//Calculate Centre Position
 		Vector3 centrePos = Vector3::Zero;
@@ -158,6 +192,18 @@ if (wheel != 0)
 		else
 		{
 			*GetRotation() = Vector3(0, GetRotation()->y + (deltaAngle* MyUtils::Deg2Rad), 0);
+		}
+
+		if (GetRotation()->y < -PI)
+		{
+			GetRotation()->y = PI;
+		}
+		else
+		{
+			if (GetRotation()->y > PI)
+			{
+				GetRotation()->y = -PI;
+			}
 		}
 	}
 }
@@ -190,6 +236,7 @@ Model* Car::HasCollided()
 	}
 	return nullptr;
 }
+
 
 
 Car::~Car()
