@@ -15,6 +15,9 @@
 //#include "Input.h"
 #include "MyDebug.h"
 #include "SpriteFont.h"
+
+
+
 class Game
 {
 public:
@@ -33,10 +36,11 @@ public:
 	void Release();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	std::vector<Model*> mFlats;
-	Model mBox, mQuad, mSkybox, thrdmGun, fstmGun, mCar, mLaz, mFLaz, * mCube, * mQuad1, * mQuad2;
+	Model mQuad, mSkybox, *ThirdTurret, *FirstTurret, * mCar, * mLaz, * mFLaz, * mCube, * Floor, * AvoidPlane;
 	MeshManager* mMeshMg;
 	FX::MyFX* mFX;
 
+	void LoadMap();
 
 
 private:
@@ -45,14 +49,21 @@ private:
 	float gAngle = 0;
 	//FPSCamera mCamera2;
 	std::vector<Model*> mOpaques;
-	Turret mCamera;
-	PlayerCar player;
+	Turret PlayerTurret;
+	PlayerCar PlayerDrive;
+
+	float timer;
 	//MouseAndKeys mMKInput;
 	//Gamepads mGamepad;
 
 	//load meshes
 	void Load();
+
+	void LoadLevel();
+
 	//display a message
+	void StartupDisplay(float dTime);
+
 	void LoadDisplay(float dTime);
 	//light position
 	DirectX::SimpleMath::Vector3 mLightPos = DirectX::SimpleMath::Vector3(0, 0, 0);
@@ -72,9 +83,22 @@ private:
 		//is the loader active
 		bool running = false;
 	};
+
 	LoadData mLoadData;
 
 	Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid);
+
+	enum class State
+	{
+		MENU,
+		PLAYING,
+		ENDSCREEN
+	};
+	State gameState;
+
+
+
+
 };
 
 #endif

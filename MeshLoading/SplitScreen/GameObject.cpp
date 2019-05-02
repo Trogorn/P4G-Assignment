@@ -15,9 +15,9 @@ void GameObject::Initialise(Model* mModel)
 }
 
 
-void GameObject::Render(FX::MyFX* fx)
+void GameObject::Render()
 {
-	fx->Render(*mModel, gd3dImmediateContext);
+	FX::GetMyFX()->Render(*mModel, gd3dImmediateContext);
 }
 
 void GameObject::Move()

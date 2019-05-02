@@ -196,6 +196,9 @@
     <ClInclude Include="EnvironmentBuilder.h">
       <Filter>Unsorted</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Unsorted</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\FX\LightHelper.hlsl">

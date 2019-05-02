@@ -11,17 +11,19 @@ class Car : public GameObject
 public:
 	Car();
 	void Initialise(Model* mModel, float Acceleration_Const, float Friction_Const, float Mass, float Braking_Const, float Min_Radius, float Turning_Mod, float Min_Turning_Speed, const std::vector<Model*> * flats);
-	void OnCollide(Model* apOther);
+	void OnCollide(Model* apOther, float dTime);
 	void Update(float dTime);
 	virtual ~Car();
 
 	Vector3* GetDirection() { return &direction; }
 
+	void SetOnRoad(bool boolean) { OnRoad = boolean; };
+
 protected:
 
 	// X = Turning
 	// Y = Acceleration
-	Vector2 controlVector;
+	Vector2 control;
 	Vector3 vCross;
 	float dot;
 	float det;
@@ -47,6 +49,7 @@ private:
 	float radius;
 	int health;
 	Model* Other = nullptr;
+	bool OnRoad;
 
 	const std::vector<Model*> * pflats;
 

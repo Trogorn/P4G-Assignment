@@ -15,4 +15,6 @@ Mesh& BuildCube(MeshManager& mgr);
 
 Mesh& BuildSphere(MeshManager& mgr, int LatLines, int LongLines);
 
+void BuildNeeded(MeshManager& mgr);
+
 #endif

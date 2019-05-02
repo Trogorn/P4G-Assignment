@@ -18,15 +18,19 @@ public:
 
 	void UpdateControlVector();
 
+	void MenuUpdate(float dTime);
+
+	void Reset();
+
 	void Debug();
 
-	void Render(FX::MyFX* fx);
+	void Render();
 
 	Camera* GetCamera() { return &camera; }
 
 private:
 	//Camera Offset unit Vector
-	Vector3 CameraOffSetV;
+	Vector3 CameraOffSetV, CameraOffSetVDefault;
 	//Length of Camera Offset Vector
 	float CameraOffSetD;
 	//Allowed distance from offset

@@ -281,3 +281,10 @@ Mesh& BuildSphere(MeshManager& mgr, int LatLines, int LongLines)
 	mesh.CreateFrom(&vertices[0], NumSphereVertices, &indices[0], NumSphereFaces * 3, mat, NumSphereFaces * 3);
 	return mesh;
 }
+
+
+void BuildNeeded(MeshManager& mgr)
+{
+	BuildQuad(mgr);
+	BuildCube(mgr);
+}
