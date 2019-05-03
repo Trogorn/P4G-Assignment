@@ -14,6 +14,9 @@ using namespace DirectX::SimpleMath;
 Vector3 gWorldScale(10, 10, 10);
 Matrix gViewMat1, gViewMat2;
 
+//Lap checkPoints
+bool pointOne(false), pointTwo(false), pointThree(false);
+
 const int MAP_WIDTH = 64;
 const float wscale = 0.09f, SizeOffset = -2.9f;
 float offset = 3;
@@ -21,8 +24,12 @@ const float mainOffset = offset / MAP_WIDTH + (MAP_WIDTH / 2);
 struct MapData
 {
 	bool road = false;  //red pixels
-	bool wall = false;	//green pixel
+	bool destructable = false;	//green pixel
 	bool obstacle = false; // blue pixel
+	bool lapPositionOne = false;
+	bool lapPositionTwo = false;
+	bool lapPositionThree = false;
+	bool outOfBounds = false;
 };
 MapData map[MAP_WIDTH][MAP_WIDTH];
 
@@ -63,13 +70,27 @@ void Game::Initialise()
 
 
 
-
-	mQuad.Initialise(*mMeshMg->GetMesh("quad"));
+	mQuad = new Model();
+	mQuad->Initialise(*mMeshMg->GetMesh("quad"));
 }
 
 void Game::Release()
 {
+	delete mQuad;
+	delete mSkybox;
+	delete ThirdTurret;
+	delete FirstTurret;
+	delete mCar;
+	delete mLaz;
+	delete mFLaz;
+	delete mCube;
+	delete Floor;
+	delete AvoidPlane;
 
+	for (int i = 0; i > mFlats.size(); i++)
+	{
+		delete mFlats[i];
+	}
 }
 
 void Game::Load()
@@ -147,16 +168,16 @@ void Game::Load()
 	//Turret and Skybox below here================================================================================================
 
 	// floor
-	MaterialExt *pMat = &mQuad.GetMesh().GetSubMesh(0).material;
-	mQuad.Initialise(*mMeshMg->GetMesh("quad"));
-	mQuad.GetScale() = Vector3(3, 1, 3);
-	mQuad.GetPosition() = Vector3(0, -1, 0);
-	mat = mQuad.GetMesh().GetSubMesh(0).material;
+	MaterialExt *pMat = &mQuad->GetMesh().GetSubMesh(0).material;
+	//mQuad->Initialise(*mMeshMg->GetMesh("quad"));
+	mQuad->GetScale() = Vector3(3, 1, 3);
+	mQuad->GetPosition() = Vector3(0, -1, 0);
+	mat = mQuad->GetMesh().GetSubMesh(0).material;
 	mat.gfxData.Set(Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 0), Vector4(0.9f, 0.8f, 0.8f, 1));
 	mat.pTextureRV = FX::GetMyFX()->mCache.LoadTexture("data/test.dds", false, gd3dDevice);
 	mat.texture = "test.dds";
 	mat.texTrsfm.scale = Vector2(10, 10);
-	mQuad.SetOverrideMat(&mat);
+	mQuad->SetOverrideMat(&mat);
 
 	mLoadData.loadedSoFar++;
 
@@ -164,13 +185,14 @@ void Game::Load()
 
 
 	//SkyBox
+	mSkybox = new Model();
 	Mesh& sb = GetMeshManager()->CreateMesh("skybox");
 	sb.CreateFrom("data/skybox.fbx", gd3dDevice, FX::GetMyFX()->mCache);
-	mSkybox.Initialise(sb);
-	mSkybox.GetScale() = Vector3(3, 3, 3);
-	mSkybox.GetPosition() = Vector3(0, 0, 0);
-	mSkybox.GetRotation() = Vector3(PI / 2, 0, 0);
-	MaterialExt& defMat = mSkybox.GetMesh().GetSubMesh(0).material;
+	mSkybox->Initialise(sb);
+	mSkybox->GetScale() = Vector3(3, 3, 3);
+	mSkybox->GetPosition() = Vector3(0, 0, 0);
+	mSkybox->GetRotation() = Vector3(PI / 2, 0, 0);
+	MaterialExt& defMat = mSkybox->GetMesh().GetSubMesh(0).material;
 	defMat.flags &= ~MaterialExt::LIT;
 	defMat.flags &= ~MaterialExt::ZTEST;
 
@@ -257,7 +279,6 @@ void Game::LoadLevel()
 		{
 			MapData& d = map[MAP_WIDTH - 1 - yi][xi]; //invert it so it's orientated with the world coordinate system
 			if (d.obstacle)
-
 			{
 
 
@@ -347,6 +368,10 @@ void Game::Update(float dTime)
 		return;
 	}
 
+
+	int zIndex = (int)((PlayerDrive.GetPosition()->z / (offset / MAP_WIDTH) + MAP_WIDTH) / 2);
+	int xIndex = (int)((PlayerDrive.GetPosition()->x / (offset / MAP_WIDTH) + MAP_WIDTH) / 2);
+
 	switch (gameState)
 	{
 	case State::MENU:
@@ -384,6 +409,33 @@ void Game::Update(float dTime)
 			PlayerTurret.Shoot();
 		}
 
+		if (map[zIndex][xIndex].outOfBounds)
+		{
+			//it's a tree cube thingy
+			PlayerDrive.SetOnRoad(false);
+		}
+		else
+		{
+			PlayerDrive.SetOnRoad(true);
+		}
+
+		if (map[zIndex][xIndex].lapPositionOne && !pointOne)
+		{
+			pointOne = true;
+			pointThree = false;
+		}
+		else if ((map[zIndex][xIndex].lapPositionTwo && pointOne))
+		{
+			pointTwo = true;
+			pointOne = false;
+		}
+		else if ((map[zIndex][xIndex].lapPositionThree && pointTwo && !pointThree))
+		{
+			pointThree = true;
+			pointTwo = false;
+			laps++;
+		}
+
 		break;
 	case State::ENDSCREEN:
 		//END UPDATE HERE///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,7 +446,6 @@ void Game::Update(float dTime)
 
 void Game::Render(float dTime)
 {
-
 	//Loading Screen Check
 	if (mLoadData.running)//Am I currently Running
 	{
@@ -402,7 +453,10 @@ void Game::Render(float dTime)
 		if (!mLoadData.loader._Is_ready())
 		{
 			//If No then display Loading Screen
-			StartupDisplay(dTime);
+			if(gameState == State::MENU)
+				StartupDisplay(dTime);
+			if (gameState == State::PLAYING)
+				LoadDisplay(dTime);
 			//Return (Don't do anything else in this function
 			return;
 		}
@@ -413,6 +467,7 @@ void Game::Render(float dTime)
 		//Return (Don't try to load anything on this run through wait for the next frame before attempting to render anything)
 		return;
 	}
+
 
 	wstringstream ss;
 
@@ -432,9 +487,7 @@ void Game::Render(float dTime)
 		FX::SetPerFrameConsts(gd3dImmediateContext, PlayerTurret.GetPos());
 
 
-		
-
-		FX::GetMyFX()->Render(mSkybox, gd3dImmediateContext);
+		FX::GetMyFX()->Render(*mSkybox, gd3dImmediateContext);
 		PlayerDrive.Render();
 		PlayerTurret.Renderthird();
 
@@ -481,8 +534,8 @@ void Game::Render(float dTime)
 		FX::SetPerFrameConsts(gd3dImmediateContext, PlayerTurret.GetPos());
 
 		// Render Skybox
-		mSkybox.GetPosition() = PlayerTurret.GetPos();
-		FX::GetMyFX()->Render(mSkybox, gd3dImmediateContext);
+		mSkybox->GetPosition() = PlayerTurret.GetPos();
+		FX::GetMyFX()->Render(*mSkybox, gd3dImmediateContext);
 
 
 		for (int i = 0; i < (int)mFlats.size(); ++i)
@@ -523,7 +576,7 @@ void Game::Render(float dTime)
 		//THIRD PERSON======================================================================================================================================
 
 		// render skybox
-		FX::GetMyFX()->Render(mSkybox, gd3dImmediateContext);
+		FX::GetMyFX()->Render(*mSkybox, gd3dImmediateContext);
 
 		for (int i = 0; i < (int)mFlats.size(); ++i)
 		{
@@ -668,7 +721,7 @@ void Game::LoadMap()
 	resViewDesc.Texture2D.MostDetailedMip = 0;
 	resViewDesc.Texture2D.MipLevels = 1;
 	//mQuad has not been setup yet at this point in time, it doesn't happen until line 325, this function is called at 119 which is way before that in the execution sequence
-	MaterialExt *pMat = &mQuad.GetMesh().GetSubMesh(0).material;
+	MaterialExt *pMat = &mQuad->GetMesh().GetSubMesh(0).material;
 	HR(gd3dDevice->CreateShaderResourceView(pTexture, &resViewDesc, &pMat->pTextureRV));
 	//we should really tell the texture cache about this or it won't get deleted :)
 
@@ -680,10 +733,31 @@ void Game::LoadMap()
 	for (int xi = 0; xi < MAP_WIDTH; ++xi)
 		for (int yi = 0; yi < MAP_WIDTH; ++yi)
 		{
+
 			MapData& d = map[MAP_WIDTH - 1 - yi][xi]; //invert it so it's orientated with the world coordinate system
-			d.road = (data[yi*y * 3 + xi * 3] > 200) ? true : false; //red?
-			d.wall = (data[yi*y * 3 + xi * 3 + 1] > 200) ? true : false; //green?
-			d.obstacle = (data[yi*y * 3 + xi * 3 + 2] > 200) ? true : false; //blue?
+			if ((data[yi*y * 3 + xi * 3] > 200) && (data[yi*y * 3 + xi * 3 + 1] > 200) && (data[yi*y * 3 + xi * 3 + 2] > 200))
+			{
+				mCar->GetPosition() = Vector3(xi*wscale + SizeOffset, 0.1f, yi*wscale + SizeOffset);
+			}
+			else
+			{
+
+				d.outOfBounds = (data[yi*y * 3 + xi * 3] < 20) && (data[yi*y * 3 + xi * 3 + 1] < 20) && (data[yi*y * 3 + xi * 3 + 2] < 20) ? true : false;
+
+				d.road = d.lapPositionOne = (data[yi*y * 3 + xi * 3] > 200) && (data[yi*y * 3 + xi * 3 + 1] > 200) && (data[yi*y * 3 + xi * 3 + 2] < 100) ? true : false;
+
+				d.road = d.lapPositionTwo = (data[yi*y * 3 + xi * 3] < 100) && (data[yi*y * 3 + xi * 3 + 1] > 200) && (data[yi*y * 3 + xi * 3 + 2] > 200) ? true : false;
+
+				d.road = d.lapPositionThree = (data[yi*y * 3 + xi * 3] > 200) && (data[yi*y * 3 + xi * 3 + 1] < 100) && (data[yi*y * 3 + xi * 3 + 2] > 200) ? true : false;
+
+
+
+				d.road = (data[yi*y * 3 + xi * 3 + 2] < 100) && (data[yi*y * 3 + xi * 3 + 0] > 200) && (data[yi*y * 3 + xi * 3 + 1] < 100) ? true : false;
+				//d.wall = (data[yi*y * 3 + xi * 3 + 1] > 200) ? true : false; //green?
+				d.obstacle = (data[yi*y * 3 + xi * 3] < 100) && (data[yi*y * 3 + xi * 3 + 1] < 100) && (data[yi*y * 3 + xi * 3 + 2] > 200) ? true : false; //blue?
+			}
+
+
 
 		}
 

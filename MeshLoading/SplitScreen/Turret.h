@@ -72,14 +72,20 @@ private:
 	float cooldown = 0;
 	float maxCooldown = 0.5f;
 	DirectX::SimpleMath::Vector3 mLockAxis{ UNLOCK,UNLOCK,UNLOCK };
+
 	//the camera matrix to modify
 	DirectX::SimpleMath::Matrix* mpViewSpaceTfm;
+
 	//movement and rotation speed
 	float speed = 10.f, rspeed = 0.044f;
+
 	//camera position
 	DirectX::SimpleMath::Vector3 mCamPos;
+
 	//camera rotation
 	float yaw = 0, pitch = 0, roll = 0;
+	float lowerLimit = DirectX::XMConvertToRadians(380);
+	float upperLimit = DirectX::XMConvertToRadians(270);
 
 	Model *FirstTurret, *ThirdTurret, *Firstlaser, *Thirdlaser;
 };

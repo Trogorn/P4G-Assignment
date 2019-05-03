@@ -36,7 +36,9 @@ public:
 	void Release();
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	std::vector<Model*> mFlats;
-	Model mQuad, mSkybox, *ThirdTurret, *FirstTurret, * mCar, * mLaz, * mFLaz, * mCube, * Floor, * AvoidPlane;
+
+	//These need to be released
+	Model * mQuad, * mSkybox, *ThirdTurret, *FirstTurret, * mCar, * mLaz, * mFLaz, * mCube, * Floor, * AvoidPlane;
 	MeshManager* mMeshMg;
 	FX::MyFX* mFX;
 
@@ -95,6 +97,8 @@ private:
 		ENDSCREEN
 	};
 	State gameState;
+
+	int laps = 0;
 
 
 

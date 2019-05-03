@@ -199,5 +199,5 @@ void PlayerCar::MenuUpdate(float dTime)
 
 void PlayerCar::Reset()
 {
-	*GetRotation() = Vector3(0, 0, 0);
+	*GetRotation() = Vector3(0, MyUtils::Deg2Rad * 180, 0);
 }

@@ -72,6 +72,15 @@ void Turret::Rotate(float dTime)
 		yaw += _yaw * dTime * rspeed;
 		pitch += _pitch * dTime * rspeed;
 		roll += _roll * dTime * rspeed;
+
+		float pitchlower = 45;
+
+		if (pitch < upperLimit)
+			pitch = upperLimit;
+
+		if (pitch > lowerLimit)
+			pitch = lowerLimit;
+
 		Matrix ori;
 		ori = Matrix::CreateFromYawPitchRoll(yaw, pitch, roll);
 		Vector3 dir(0, 0, 1), up(0, 1, 0);
