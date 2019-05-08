@@ -64,6 +64,7 @@ public:
 	}
 
 	void Die() { if(!terrain)alive = false; }
+	void Respawn() { if (!terrain)alive = true; }
 	bool GetAlive() { return alive; }
 	bool GetTerrain() { return terrain; };
 

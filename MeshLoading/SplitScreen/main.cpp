@@ -19,6 +19,7 @@ Game gGame;
 
 void Update(float dTime)
 {
+	GetIAudioMgr()->Update();
 	gGame.Update(dTime);
 }
 
@@ -63,6 +64,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	new MeshManager;
 	new MouseAndKeys;
 	new EnvironmentBuilder;
+	new AudioMgrFMOD;
+	GetIAudioMgr()->Initialise();
+
 	GetMouseAndKeys()->Initialise(GetMainWnd());
 	gGame.Initialise();
 
@@ -74,6 +78,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	delete GetMeshManager();
 	delete FX::GetMyFX();
 	delete GetEnvironmentBuilder();
+	delete GetIAudioMgr();
 
 	ReleaseD3D();
 

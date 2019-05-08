@@ -18,6 +18,7 @@ void Turret::Initialise(Model *FirstTurret, Model *ThirdTurret, Model *FirstLase
 	CreateViewMatrix(*mpViewSpaceTfm, pos, tgt, Vector3(0, 1, 0));
 	mCamPos = pos;
 	yaw = pitch = roll = 0;
+	ResetAmmo();
 }
 
 void Turret::UpdatePosition(Vector3 position)
@@ -93,10 +94,11 @@ void Turret::Rotate(float dTime)
 void Turret::Shoot()
 {
 	Model* box = nullptr;
-	if (cooldown <= 0)
+	if (ammo > 0 && cooldown <= 0)
 	{
 		shortestdistrance = distance;
-		
+		ammo--;
+		GetIAudioMgr()->GetSfxMgr()->Play("Fire", false, false, nullptr, 0.8f);
 		bool hit = false;
 
 		Vector3 dir(0, 0, 1);
@@ -164,7 +166,9 @@ void Turret::Renderthird()
 
 	Matrix cameraMatrixInverse = GetMatrix().Invert();
 
-	TurretMatrix = TurretMatrix * cameraMatrixInverse;
+	Matrix translation;
+	translation.Translation(Vector3(0.f, -0.04f, 0.f));
+	TurretMatrix = translation * TurretMatrix * cameraMatrixInverse ;
 
 
 	FX::GetMyFX()->Render(*ThirdTurret, gd3dImmediateContext, nullptr, &TurretMatrix);
@@ -172,7 +176,7 @@ void Turret::Renderthird()
 	Matrix LaserMatrix;
 	Thirdlaser->GetWorldMatrix(LaserMatrix);
 
-	LaserMatrix = LaserMatrix * cameraMatrixInverse;
+	LaserMatrix = translation *LaserMatrix * cameraMatrixInverse;
 
 	if (!CanFire())
 		FX::GetMyFX()->Render(*Thirdlaser, gd3dImmediateContext, nullptr, &LaserMatrix);

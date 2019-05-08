@@ -23,6 +23,8 @@
 #include "SpriteFont.h"
 
 
+
+
 class EnvironmentBuilder : public Singleton<EnvironmentBuilder>
 {
 
@@ -35,18 +37,28 @@ public:
 	void BuildTrees();
 	void BuildObstacles();
 	void RenderEnvironment();
+	void RenderSkyBox() {	mFX->Render(*mSkybox, gd3dImmediateContext); }
+	void BuildSkyBox();
+	void UpdateSkyBox(DirectX::SimpleMath::Vector3 pos);
 
-	MeshManager *mMeshMgr;
-	Model *mQuad1, *mQuad2, *mCube, *mTent, *mQuadPyramid, *mLight, *mCar;
-	std::vector<Model*> mFlats;
+	void Release();
+
+	Model* getCube();
+	Model* getQuad() { return mQuad; }
+
+	MeshManager *mMeshMg;
+	Model *mQuad, *mSkybox, *mCube, *Floor, *AvoidPlane;
 	FX::MyFX* mFX;
+
+
+
+	
 
 protected:
 
 private:
 
-
-
+	DirectX::SimpleMath::Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid);
 };
 SINGLETON_GET(EnvironmentBuilder);
 #endif

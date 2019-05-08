@@ -17,7 +17,9 @@ public:
 
 	Vector3* GetDirection() { return &direction; }
 
-	void SetOnRoad(bool boolean) { OnRoad = boolean; };
+	void SetOnRoad(bool boolean) { OnRoad = boolean; }
+
+	bool isAlive() { return alive; }
 
 protected:
 
@@ -50,6 +52,7 @@ private:
 	int health;
 	Model* Other = nullptr;
 	bool OnRoad;
+	bool alive = true;
 
 	const std::vector<Model*> * pflats;
 

@@ -19,6 +19,7 @@ void Car::Initialise(Model* mModel, float Acceleration_Const, float Friction_Con
 	radius = 0;
 	Collider = &mModel->GetCollider();
 	pflats = flats;
+	health = 3;
 
 	GameObject::Initialise(mModel);
 }
@@ -34,6 +35,10 @@ void Car::Update(float dTime)
 	if (Other != nullptr)
 	{
 		OnCollide(Other, dTime);
+	}
+	if (health <= 0)
+	{
+		alive = false;
 	}
 }
 

@@ -15,7 +15,8 @@
 //#include "Input.h"
 #include "MyDebug.h"
 #include "SpriteFont.h"
-
+#include "EnvironmentBuilder.h"
+#include "AudioMgr.h"
 
 
 class Game
@@ -27,22 +28,22 @@ public:
 
 	}
 	~Game() {
-		Release();
+		//Release();
 	}
 	void Update(float dTime);
 	void Render(float dTime);
 	void OnResize(int screenWidth, int screenHeight);
 	void Initialise();
 	void Release();
+
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	std::vector<Model*> mFlats;
+
 
 	//These need to be released
-	Model * mQuad, * mSkybox, *ThirdTurret, *FirstTurret, * mCar, * mLaz, * mFLaz, * mCube, * Floor, * AvoidPlane;
+	Model *ThirdTurret, *FirstTurret, * mCar, * mLaz, * mFLaz;
+	std::vector<Model*> mFlats;
 	MeshManager* mMeshMg;
 	FX::MyFX* mFX;
-
-	void LoadMap();
 
 
 private:
@@ -73,6 +74,10 @@ private:
 	DirectX::SpriteBatch *mpSpriteBatch = nullptr;
 	DirectX::SpriteFont *mpFont = nullptr, *mpFont2 = nullptr;
 
+	void BuildObstacles();
+
+	float pauseTimer = 0;
+
 	//loading handler
 	struct LoadData
 	{
@@ -86,9 +91,12 @@ private:
 		bool running = false;
 	};
 
+	void LoadMap();
+
 	LoadData mLoadData;
 
-	Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid);
+
+	//Vector3 AvoidQuad(float y, float minX, float maxX, float minZ, float maxZ, float minXAvoid, float maxXAvoid, float minZAvoid, float maxZAvoid);
 
 	enum class State
 	{
@@ -106,4 +114,3 @@ private:
 };
 
 #endif
-

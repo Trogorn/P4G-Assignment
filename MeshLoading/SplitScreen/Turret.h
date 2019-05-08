@@ -9,12 +9,21 @@
 #include "Input.h"
 #include "GameObject.h"
 #include "MyUtils.h"
-
+#include "AudioMgr.h"
 class Turret : public GameObject
 {
 public:
 	enum { UNLOCK = 999999 };
 
+	const int GetAmmo()
+	{
+		return ammo;
+	}
+
+	void ResetAmmo()
+	{
+		ammo = 25;
+	}
 	
 	void Initialise(Model *FirstTurret, Model *ThirdTurret, Model *FirstLaser, Model *ThirdLaser, const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& tgt, DirectX::SimpleMath::Matrix& viewSpaceTfm);
 
@@ -62,7 +71,7 @@ public:
 private:
 	
 
-
+	int ammo;
 	std::vector<Model*> *mpMyVec;
 	float shortestdistrance;
 	DirectX::SimpleMath::Vector3 hitPosition;
